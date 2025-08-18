@@ -19,6 +19,10 @@ public class BL implements ModInitializer {
 		// However, some things (like resources) may still be uninitialized.
 		// Proceed with mild caution.
 
+
+		/*FabricDefaultAttributeRegistry.register(
+				entities.blentity, BLEntity.createMobAttributes().build()
+		);*/
 		LOGGER.info("Hello Fabric world!");
 	}
 }

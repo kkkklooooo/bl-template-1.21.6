@@ -19,18 +19,14 @@
 			"com.bl.BL"
 		],
 		"client": [
-			"com.bl.BLClient"
+			"com.bl.entity.client.BLclient"
 		],
 		"fabric-datagen": [
 			"com.bl.BLDataGenerator"
 		]
 	},
 	"mixins": [
-		"bl.mixins.json",
-		{
-			"config": "bl.client.mixins.json",
-			"environment": "client"
-		}
+		"bl.mixins.json"
 	],
 	"depends": {
 		"fabricloader": ">=0.17.2",
