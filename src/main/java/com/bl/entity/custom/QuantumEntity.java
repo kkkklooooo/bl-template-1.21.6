@@ -24,8 +24,8 @@ public abstract class QuantumEntity extends Entity {
     @Override
     protected void initDataTracker(DataTracker.Builder builder) {
         //this.dataTracker.startTracking(OBSERVED_TIME, 0);
-        //builder.build();
-        this.getDataTracker().set(OBSERVED_TIME,0);
+        builder.build().set(OBSERVED_TIME,0);
+        //this.getDataTracker().;
         //this.dataTracker
 
     }
