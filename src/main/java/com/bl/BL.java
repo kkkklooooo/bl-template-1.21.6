@@ -1,7 +1,13 @@
 package com.bl;
 
+import com.bl.entity.custom.QuantumEntityy;
+import com.bl.entity.entities;
 import net.fabricmc.api.ModInitializer;
 
+import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
+import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,10 +25,11 @@ public class BL implements ModInitializer {
 		// However, some things (like resources) may still be uninitialized.
 		// Proceed with mild caution.
 
-
-		/*FabricDefaultAttributeRegistry.register(
+	/*
+		FabricDefaultAttributeRegistry.register(
 				entities.blentity, BLEntity.createMobAttributes().build()
 		);*/
+		Registry.register(Registries.ENTITY_TYPE, Identifier.of(MOD_ID,"blentity"), entities.blentity);
 		LOGGER.info("Hello Fabric world!");
 	}
 }
