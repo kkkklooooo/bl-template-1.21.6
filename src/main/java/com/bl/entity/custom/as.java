@@ -1,0 +1,186 @@
+package com.bl.entity.custom;
+
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.data.DataTracker;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.particle.ParticleTypes;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.storage.ReadView;
+import net.minecraft.storage.WriteView;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
+
+import java.util.List;
+
+import static com.bl.entity.ModEntities.QUANTUM_ENTITY;
+
+public class ExpandingSphereEntity extends Entity {
+    private float radius = 0.5f; // 初始半径
+    private final float maxRadius = 20.0f; // 最大半径
+    private final float expansionRate = 0.5f; // 每Tick扩张的半径
+
+    public ExpandingSphereEntity(EntityType<?> type, World world) {
+        super(type, world);
+        this.noClip = true;
+    }
+
+    @Override
+    protected void initDataTracker(DataTracker.Builder builder) {
+
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+
+        // 扩大半径
+        radius += expansionRate;
+
+        // 摧毁范围内的实体和方块
+        destroyInRadius();
+
+        // 生成膨胀效果的粒子
+        spawnExpansionParticles();
+
+        // 达到最大半径后消失
+        if (radius >= maxRadius) {
+            this.discard();
+        }
+    }
+
+    @Override
+    public boolean damage(ServerWorld world, DamageSource source, float amount) {
+        return false;
+    }
+
+    @Override
+    protected void readCustomData(ReadView view) {
+
+    }
+
+    @Override
+    protected void writeCustomData(WriteView view) {
+
+    }
+
+    private void destroyInRadius() {
+        // 获取范围内的所有实体
+        Box box = new Box(
+                this.getX() - radius, this.getY() - radius, this.getZ() - radius,
+                this.getX() + radius, this.getY() + radius, this.getZ() + radius
+        );
+
+        List<Entity> entities = this.getWorld().getOtherEntities(this, box);
+        for (Entity entity : entities) {
+            if (entity instanceof LivingEntity || entity instanceof ItemEntity) {
+                // 对实体造成"量子化"效果
+                quantumizeEntity(entity);
+            }
+        }
+
+        // 摧毁范围内的方块（如果是客户端，需要跳过）
+        if (!this.getWorld().isClient) {
+            // 这是一个性能敏感的操作，需要优化
+            destroyBlocksInRadius();
+        }
+    }
+
+    private void quantumizeEntity(Entity entity) {
+        // 创建一个新的"量子态"实体，它将在1秒后消失
+        QuantumEntityy quantumEntity = new QuantumEntityy(
+                QUANTUM_ENTITY, this.getWorld());
+
+        // 复制原实体的外观等信息
+        quantumEntity.setModel(entity.getType());
+        quantumEntity.setPosition(entity.getPos());
+
+        // 随机抛射向量
+        Vec3d velocity = new Vec3d(
+                (random.nextDouble() - 0.5) * 2.0,
+                random.nextDouble() * 1.5,
+                (random.nextDouble() - 0.5) * 2.0
+        );
+        quantumEntity.setVelocity(velocity);
+
+        this.getWorld().spawnEntity(quantumEntity);
+
+        // 移除原实体
+        entity.discard();
+    }
+
+    private void destroyBlocksInRadius() {
+        // 这是一个简化的实现，实际应用中需要考虑性能优化
+        int iRadius = (int) Math.ceil(radius);
+        BlockPos center = this.getBlockPos();
+
+        for (int x = -iRadius; x <= iRadius; x++) {
+            for (int y = -iRadius; y <= iRadius; y++) {
+                for (int z = -iRadius; z <= iRadius; z++) {
+                    BlockPos pos = center.add(x, y, z);
+                    if (center.getSquaredDistance(pos) <= radius * radius) {
+                        // 创建方块的"量子态"掉落物
+                        quantumizeBlock(pos);
+                    }
+                }
+            }
+        }
+    }
+
+    private void quantumizeBlock(BlockPos pos) {
+        BlockState blockState = this.getWorld().getBlockState(pos);
+        if (blockState.isAir() || blockState.getHardness(this.getWorld(), pos) < 0) {
+            return; // 跳过空气和不可破坏的方块（如基岩）
+        }
+
+        // 移除原方块
+        this.getWorld().removeBlock(pos, false);
+
+        // 创建量子态方块实体（类似掉落物形式）
+        QuantumBlockEntity quantumBlock = new QuantumBlockEntity(
+                ModEntities.QUANTUM_BLOCK, this.getWorld());
+        quantumBlock.setBlockState(blockState);
+        quantumBlock.setPosition(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
+
+        // 随机抛射向量
+        Vec3d velocity = new Vec3d(
+                (random.nextDouble() - 0.5) * 1.0,
+                random.nextDouble() * 1.0,
+                (random.nextDouble() - 0.5) * 1.0
+        );
+        quantumBlock.setVelocity(velocity);
+
+        this.getWorld().spawnEntity(quantumBlock);
+    }
+
+    private void spawnExpansionParticles() {
+        // 生成表示膨胀边缘的粒子效果
+        for (int i = 0; i < 50; i++) {
+            double theta = random.nextDouble() * Math.PI * 2;
+            double phi = random.nextDouble() * Math.PI;
+            double x = this.getX() + radius * Math.cos(theta) * Math.sin(phi);
+            double y = this.getY() + radius * Math.cos(phi);
+            double z = this.getZ() + radius * Math.sin(theta) * Math.sin(phi);
+
+            this.getWorld().addParticleClient(ParticleTypes.ELECTRIC_SPARK,
+                    x, y, z, 0, 0, 0);
+        }
+    }
+    protected void initDataTracker() {
+        // 初始化数据跟踪器（如果需要同步数据到客户端）
+    }
+    protected void readCustomDataFromNbt(NbtCompound nbt) {
+        // 从NBT读取数据
+        this.radius = nbt.getFloat("Radius").orElse(0f);
+    }
+    protected void writeCustomDataToNbt(NbtCompound nbt) {
+        // 写入数据到NBT
+        nbt.putFloat("Radius", this.radius);
+    }
+}

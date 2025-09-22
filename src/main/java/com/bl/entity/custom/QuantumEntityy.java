@@ -1,7 +1,11 @@
 package com.bl.entity.custom;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.attribute.DefaultAttributeContainer;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.storage.ReadView;
@@ -30,7 +34,7 @@ public class QuantumEntityy extends QuantumEntity {
 
     }
 
-    public void setModelEntity(EntityType<?> modelEntity) {
+    public void setModel(EntityType<?> modelEntity) {
         this.modelEntity = modelEntity;
     }
 
@@ -60,4 +64,13 @@ public class QuantumEntityy extends QuantumEntity {
     }
 
     // 其他方法和渲染相关代码...
+    public static DefaultAttributeContainer createAttributes(){
+        return  MobEntity.createMobAttributes()
+                .add(EntityAttributes.MAX_HEALTH,99999.0)
+                .add(EntityAttributes.MOVEMENT_SPEED,0f)
+                .add(EntityAttributes.FLYING_SPEED,0f)
+                .add(EntityAttributes.ATTACK_DAMAGE,0f)
+                .add(EntityAttributes.FOLLOW_RANGE,0)
+                .build();
+    }
 }
