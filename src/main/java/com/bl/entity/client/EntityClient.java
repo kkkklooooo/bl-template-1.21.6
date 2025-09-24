@@ -1,5 +1,6 @@
 package com.bl.entity.client;
 
+import com.bl.entity.custom.QuantumBlockEntity;
 import com.bl.entity.custom.QuantumEntityRenderer;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
@@ -24,6 +25,7 @@ public class EntityClient implements ClientModInitializer {
                 blentity,(ctx -> new BLRenderer(ctx))
         );
         EntityRendererRegistry.register(EXPANDING_SPHERE,(ctx -> new ESRenderer(ctx)));
+        EntityRendererRegistry.register(QUANTUM_BLOCK,(ctx -> new QBRenderer(ctx)));
         EntityModelLayerRegistry.registerModelLayer(BLRenderer.MODEL_CUBE_LAYER, com.bl.entity.client.blentity::getTexturedModelData);
         //EntityModelLayerRegistry.registerModelLayer(BLRenderer.MODEL_CUBE_LAYER, BLmd::getTexturedModelData);
 
