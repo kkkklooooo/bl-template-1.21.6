@@ -18,6 +18,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 import java.util.List;
+import java.util.Random;
 
 import static com.bl.entity.ModEntities.QUANTUM_BLOCK;
 import static com.bl.entity.ModEntities.QUANTUM_ENTITY;
@@ -82,7 +83,7 @@ public class ExpandingSphereEntity extends Entity {
         for (Entity entity : entities) {
             if (entity instanceof LivingEntity || entity instanceof ItemEntity) {
                 // 对实体造成"量子化"效果
-                quantumizeEntity(entity);
+                //quantumizeEntity(entity);
             }
         }
 
@@ -143,21 +144,24 @@ public class ExpandingSphereEntity extends Entity {
         // 移除原方块
         this.getWorld().removeBlock(pos, false);
 
-        // 创建量子态方块实体（类似掉落物形式）
-        QuantumBlockEntity quantumBlock = new QuantumBlockEntity(
-                QUANTUM_BLOCK, this.getWorld());
-        quantumBlock.setBlockState(blockState);
-        quantumBlock.setPosition(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
+        if(new Random().nextFloat()>0.95f)
+        {
+            QuantumBlockEntity quantumBlock = new QuantumBlockEntity(
+                    QUANTUM_BLOCK, this.getWorld());
+            quantumBlock.setBlockState(blockState);
+            quantumBlock.setPosition(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
 
-        // 随机抛射向量
-        Vec3d velocity = new Vec3d(
-                (random.nextDouble() - 0.5) * 1.0,
-                random.nextDouble() * 1.0,
-                (random.nextDouble() - 0.5) * 1.0
-        );
-        quantumBlock.setVelocity(velocity);
+            // 随机抛射向量
+            Vec3d velocity = new Vec3d(
+                    (random.nextDouble() - 0.5) * 1.0,
+                    random.nextDouble() * 1.0,
+                    (random.nextDouble() - 0.5) * 1.0
+            );
+            quantumBlock.setVelocity(velocity);
 
-        this.getWorld().spawnEntity(quantumBlock);
+            this.getWorld().spawnEntity(quantumBlock);
+            // 创建量子态方块实体（类似掉落物形式）
+        }
     }
 
     private void spawnExpansionParticles() {
