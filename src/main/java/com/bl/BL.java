@@ -1,8 +1,8 @@
 package com.bl;
 
+import com.bl.entity.ModEntities;
 import com.bl.entity.custom.BLEntity;
 import com.bl.entity.custom.QuantumEntityy;
-import com.bl.entity.entities;
 import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
@@ -12,7 +12,8 @@ import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static com.bl.entity.entities.blentity;
+import static com.bl.entity.ModEntities.blentity;
+
 
 public class BL implements ModInitializer {
 	public static final String MOD_ID = "bl";
@@ -32,8 +33,9 @@ public class BL implements ModInitializer {
 		FabricDefaultAttributeRegistry.register(
 				entities.blentity, BLEntity.createMobAttributes().build()
 		);*/
-		Registry.register(Registries.ENTITY_TYPE, Identifier.of(MOD_ID,"blentity"), blentity);
-		//FabricDefaultAttributeRegistry.register(blentity, QuantumEntityy.createAttributes());
+		//Registry.register(Registries.ENTITY_TYPE, Identifier.of(MOD_ID,"blentity"), blentity);
+		ModEntities.register();
+		FabricDefaultAttributeRegistry.register(blentity, BLEntity.createAttributes());
 		LOGGER.info("Hello Fabric world!");
 	}
 }

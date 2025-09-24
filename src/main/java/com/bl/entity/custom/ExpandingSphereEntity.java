@@ -19,6 +19,7 @@ import net.minecraft.world.World;
 
 import java.util.List;
 
+import static com.bl.entity.ModEntities.QUANTUM_BLOCK;
 import static com.bl.entity.ModEntities.QUANTUM_ENTITY;
 
 public class ExpandingSphereEntity extends Entity {
@@ -144,7 +145,7 @@ public class ExpandingSphereEntity extends Entity {
 
         // 创建量子态方块实体（类似掉落物形式）
         QuantumBlockEntity quantumBlock = new QuantumBlockEntity(
-                ModEntities.QUANTUM_BLOCK, this.getWorld());
+                QUANTUM_BLOCK, this.getWorld());
         quantumBlock.setBlockState(blockState);
         quantumBlock.setPosition(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
 

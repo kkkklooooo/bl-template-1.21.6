@@ -10,18 +10,18 @@ import net.minecraft.world.World;
 
 import java.util.List;
 
+import static com.bl.entity.ModEntities.EXPANDING_SPHERE;
+
 public class BLEntity extends MobEntity {
-    public BLEntity(EntityType<? extends MobEntity> entityType, World world) {
-        super(entityType, world);
-    }
+
         // 生命周期（Tick数）
         private int lifeTime;
         // 目标实体（如果有，例如被引导的球状闪电）
         private Entity target;
 
-        public BallLightningEntity(EntityType<?> type, World world) {
-            super(type, world);
-            this.noClip = true; // 允许穿墙
+        public BLEntity(EntityType<?> type, World world) {
+            super((EntityType<? extends MobEntity>) type, world);
+            //this.noClip = true; // 允许穿墙
             this.lifeTime = 200; // 设置一个默认生命周期（10秒，20tick/秒）
         }
 
@@ -76,7 +76,7 @@ public class BLEntity extends MobEntity {
 
         private void createExpandingSphere() {
             ExpandingSphereEntity sphere = new ExpandingSphereEntity(
-                    ModEntities.EXPANDING_SPHERE, this.getWorld());
+                    EXPANDING_SPHERE, this.getWorld());
             sphere.setPosition(this.getPos());
             this.getWorld().spawnEntity(sphere);
         }

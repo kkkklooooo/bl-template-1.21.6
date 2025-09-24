@@ -8,20 +8,21 @@ import net.minecraft.util.Identifier;
 
 import static com.bl.BL.MOD_ID;
 
-public class BLRenderer extends MobEntityRenderer<BLEntity, BLrds, BLmd> {
-    public static final EntityModelLayer MODEL_CUBE_LAYER = new EntityModelLayer(Identifier.of(MOD_ID, "blentity"), "all");
+public class BLRenderer extends MobEntityRenderer<BLEntity, BLrds, blentity> {
+    private static final Identifier TEXTURE = Identifier.of(MOD_ID,"textures/entity/blentity/blentity.png");
+    public static final EntityModelLayer MODEL_CUBE_LAYER = new EntityModelLayer(Identifier.of(MOD_ID, "blentity"), "bone");
     public BLRenderer(EntityRendererFactory.Context context) {
-        super(context,new BLmd(context.getPart(MODEL_CUBE_LAYER)), 0.5f);
+        super(context,new blentity(context.getPart(MODEL_CUBE_LAYER)), 0.5f);
     }
 
     @Override
     public BLrds createRenderState() {
-        return null;
+        return new BLrds();
     }
 
 
     @Override
     public Identifier getTexture(BLrds state) {
-        return null;
+        return TEXTURE;
     }
 }
