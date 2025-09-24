@@ -23,6 +23,7 @@ public class EntityClient implements ClientModInitializer {
         EntityRendererRegistry.register(
                 blentity,(ctx -> new BLRenderer(ctx))
         );
+        EntityRendererRegistry.register(EXPANDING_SPHERE,(ctx -> new ESRenderer(ctx)));
         EntityModelLayerRegistry.registerModelLayer(BLRenderer.MODEL_CUBE_LAYER, com.bl.entity.client.blentity::getTexturedModelData);
         //EntityModelLayerRegistry.registerModelLayer(BLRenderer.MODEL_CUBE_LAYER, BLmd::getTexturedModelData);
 
