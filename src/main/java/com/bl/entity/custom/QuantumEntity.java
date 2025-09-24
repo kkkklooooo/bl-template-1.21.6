@@ -1,5 +1,6 @@
 package com.bl.entity.custom;
 
+import com.bl.BL;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.data.DataTracker;
@@ -12,6 +13,7 @@ import net.minecraft.world.World;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 public abstract class QuantumEntity extends Entity {
     private static final TrackedData<Integer> OBSERVED_TIME = DataTracker.registerData(QuantumEntity.class, TrackedDataHandlerRegistry.INTEGER);
@@ -24,7 +26,8 @@ public abstract class QuantumEntity extends Entity {
     @Override
     protected void initDataTracker(DataTracker.Builder builder) {
         //this.dataTracker.startTracking(OBSERVED_TIME, 0);
-        builder.build().set(OBSERVED_TIME,0);
+        builder.add(OBSERVED_TIME,0).build();
+        BL.LOGGER.info("dzfjkhhjdfas");
         //this.getDataTracker().;
         //this.dataTracker
 
