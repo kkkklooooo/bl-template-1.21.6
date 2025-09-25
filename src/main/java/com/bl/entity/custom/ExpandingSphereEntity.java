@@ -83,7 +83,7 @@ public class ExpandingSphereEntity extends Entity {
         for (Entity entity : entities) {
             if (entity instanceof LivingEntity || entity instanceof ItemEntity) {
                 // 对实体造成"量子化"效果
-                //quantumizeEntity(entity);
+                quantumizeEntity(entity);
             }
         }
 
@@ -144,8 +144,6 @@ public class ExpandingSphereEntity extends Entity {
         // 移除原方块
         this.getWorld().removeBlock(pos, false);
 
-        if(new Random().nextFloat()>0.95f)
-        {
             QuantumBlockEntity quantumBlock = new QuantumBlockEntity(
                     QUANTUM_BLOCK, this.getWorld());
             quantumBlock.setBlockState(blockState);
@@ -161,7 +159,6 @@ public class ExpandingSphereEntity extends Entity {
 
             this.getWorld().spawnEntity(quantumBlock);
             // 创建量子态方块实体（类似掉落物形式）
-        }
     }
 
     private void spawnExpansionParticles() {

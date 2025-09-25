@@ -13,7 +13,7 @@ public class QuantumEntityRenderer extends EntityRenderer<QuantumEntity,QuantumE
 
     @Override
     public QuantumEntityRD createRenderState() {
-        return null;
+        return new QuantumEntityRD();
     }
 
     /*
