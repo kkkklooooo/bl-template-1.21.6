@@ -145,7 +145,10 @@ public class ExpandingSphereEntity extends Entity {
             return;
         }
 
-            FallingBlockEntity quantumBlock = FallingBlockEntity.spawnFromBlock(this.getWorld(),pos,blockState);
+            //QuantumBlockEntity quantumBlock = QuantumBlockEntity.spawnFromBlock(this.getWorld(),pos,blockState);
+            QuantumBlockEntity quantumBlock = new QuantumBlockEntity(QUANTUM_BLOCK,this.getWorld());
+            this.getWorld().setBlockState(pos, blockState.getFluidState().getBlockState(), 3);
+            this.getWorld().spawnEntity(quantumBlock);
             quantumBlock.setPosition(pos.getX() + 0.5, pos.getY()+1.0, pos.getZ() + 0.5);
 
             // 随机抛射向量
