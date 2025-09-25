@@ -1,10 +1,7 @@
 package com.bl.entity.custom;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.ItemEntity;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.*;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.nbt.NbtCompound;
@@ -74,7 +71,7 @@ public class ExpandingSphereEntity extends Entity {
 
     private void destroyInRadius() {
         // 获取范围内的所有实体
-        Box box = new Box(
+        /*Box box = new Box(
                 this.getX() - radius, this.getY() - radius, this.getZ() - radius,
                 this.getX() + radius, this.getY() + radius, this.getZ() + radius
         );
@@ -85,7 +82,7 @@ public class ExpandingSphereEntity extends Entity {
                 // 对实体造成"量子化"效果
                 quantumizeEntity(entity);
             }
-        }
+        }*/
 
         // 摧毁范围内的方块（如果是客户端，需要跳过）
         if (!this.getWorld().isClient) {
@@ -143,17 +140,19 @@ public class ExpandingSphereEntity extends Entity {
 
         // 移除原方块
         this.getWorld().removeBlock(pos, false);
+        if(random.nextDouble()<0.9)
+        {
+            return;
+        }
 
-            QuantumBlockEntity quantumBlock = new QuantumBlockEntity(
-                    QUANTUM_BLOCK, this.getWorld());
-            quantumBlock.setBlockState(blockState);
-            quantumBlock.setPosition(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
+            FallingBlockEntity quantumBlock = FallingBlockEntity.spawnFromBlock(this.getWorld(),pos,blockState);
+            quantumBlock.setPosition(pos.getX() + 0.5, pos.getY()+1.0, pos.getZ() + 0.5);
 
             // 随机抛射向量
             Vec3d velocity = new Vec3d(
-                    (random.nextDouble() - 0.5) * 1.0,
-                    random.nextDouble() * 1.0,
-                    (random.nextDouble() - 0.5) * 1.0
+                    (random.nextDouble() - 0.5) * 3,
+                    random.nextDouble() * 3.0,
+                    (random.nextDouble() - 0.5) * 3
             );
             quantumBlock.setVelocity(velocity);
 
