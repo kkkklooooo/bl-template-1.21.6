@@ -1,7 +1,9 @@
 package com.bl;
 
 import com.bl.entity.ModEntities;
+import com.bl.entity.client.ExpandingSphere;
 import com.bl.entity.custom.BLEntity;
+import com.bl.entity.custom.ExpandingSphereEntity;
 import com.bl.entity.custom.QuantumEntityy;
 import net.fabricmc.api.ModInitializer;
 
@@ -12,6 +14,7 @@ import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static com.bl.entity.ModEntities.EXPANDING_SPHERE;
 import static com.bl.entity.ModEntities.blentity;
 
 
@@ -36,6 +39,7 @@ public class BL implements ModInitializer {
 		//Registry.register(Registries.ENTITY_TYPE, Identifier.of(MOD_ID,"blentity"), blentity);
 		ModEntities.register();
 		FabricDefaultAttributeRegistry.register(blentity, BLEntity.createAttributes());
+		FabricDefaultAttributeRegistry.register(EXPANDING_SPHERE, ExpandingSphereEntity.createAttributes());
 		LOGGER.info("Hello Fabric world!");
 	}
 }

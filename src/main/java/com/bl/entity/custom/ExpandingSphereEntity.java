@@ -2,8 +2,11 @@ package com.bl.entity.custom;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.*;
+import net.minecraft.entity.attribute.DefaultAttributeContainer;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
+import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.world.ServerWorld;
@@ -17,27 +20,34 @@ import net.minecraft.world.World;
 import java.util.List;
 import java.util.Random;
 
-import static com.bl.entity.ModEntities.QUANTUM_BLOCK;
+//import static com.bl.entity.ModEntities.QUANTUM_BLOCK;
 import static com.bl.entity.ModEntities.QUANTUM_ENTITY;
 
-public class ExpandingSphereEntity extends Entity {
+public class ExpandingSphereEntity extends MobEntity {
     private float radius = 0.5f; // 初始半径
     private final float maxRadius = 20.0f; // 最大半径
     private final float expansionRate = 0.5f; // 每Tick扩张的半径
 
     public ExpandingSphereEntity(EntityType<?> type, World world) {
-        super(type, world);
+        super((EntityType<? extends MobEntity>) type, world);
         this.noClip = true;
+
     }
 
-    @Override
-    protected void initDataTracker(DataTracker.Builder builder) {
-
+    public static DefaultAttributeContainer createAttributes(){
+        return MobEntity.createMobAttributes()
+                .add(EntityAttributes.MAX_HEALTH, 33550336.0)
+                .add(EntityAttributes.MOVEMENT_SPEED, 1f)
+                .add(EntityAttributes.FLYING_SPEED, 1f)
+                .add(EntityAttributes.ATTACK_DAMAGE, 0.5f)
+                .add(EntityAttributes.FOLLOW_RANGE, 10)
+                .build();
     }
 
     @Override
     public void tick() {
         super.tick();
+        this.setVelocity(0F,0F,0F);
 
         // 扩大半径
         radius += expansionRate;
@@ -57,16 +67,6 @@ public class ExpandingSphereEntity extends Entity {
     @Override
     public boolean damage(ServerWorld world, DamageSource source, float amount) {
         return false;
-    }
-
-    @Override
-    protected void readCustomData(ReadView view) {
-
-    }
-
-    @Override
-    protected void writeCustomData(WriteView view) {
-
     }
 
     private void destroyInRadius() {
@@ -145,10 +145,10 @@ public class ExpandingSphereEntity extends Entity {
             return;
         }
 
-            //QuantumBlockEntity quantumBlock = QuantumBlockEntity.spawnFromBlock(this.getWorld(),pos,blockState);
-            QuantumBlockEntity quantumBlock = new QuantumBlockEntity(QUANTUM_BLOCK,this.getWorld());
+            FallingBlockEntity quantumBlock = FallingBlockEntity.spawnFromBlock(this.getWorld(),pos,blockState);
+            /*QuantumBlockEntity quantumBlock = new QuantumBlockEntity(QUANTUM_BLOCK,this.getWorld());
             this.getWorld().setBlockState(pos, blockState.getFluidState().getBlockState(), 3);
-            this.getWorld().spawnEntity(quantumBlock);
+            this.getWorld().spawnEntity(quantumBlock);*/
             quantumBlock.setPosition(pos.getX() + 0.5, pos.getY()+1.0, pos.getZ() + 0.5);
 
             // 随机抛射向量

@@ -26,7 +26,7 @@ public class blentity extends EntityModel<BLrds> {
 	public void setAngles(BLrds b) {
 		super.setAngles(b);
 	}
-	public void render(MatrixStack matrices, VertexConsumer vertexConsumer, int light, int overlay, float red, float green, float blue, float alpha) {
+	/*public void render(MatrixStack matrices, VertexConsumer vertexConsumer, int light, int overlay, float red, float green, float blue, float alpha) {
 		bone.render(matrices, vertexConsumer, light, overlay);
-	}
+	}*/
 }

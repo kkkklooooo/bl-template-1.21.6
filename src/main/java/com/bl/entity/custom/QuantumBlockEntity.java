@@ -2,6 +2,7 @@ package com.bl.entity.custom;
 
 import com.bl.BL;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.FallingBlockEntity;
 import net.minecraft.entity.damage.DamageSource;
@@ -13,29 +14,34 @@ import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.storage.ReadView;
 import net.minecraft.storage.WriteView;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+
 public class QuantumBlockEntity extends FallingBlockEntity {
-    private BlockState blockState;
     private static final TrackedData<Integer> OBSERVED_TIME = DataTracker.registerData(QuantumEntity.class, TrackedDataHandlerRegistry.INTEGER);
     private final Map<UUID, Integer> observerTimers = new HashMap<>();
 
-    public QuantumBlockEntity(EntityType<?> type, World world) {
-        super((EntityType<? extends FallingBlockEntity>) type, world);
+    public QuantumBlockEntity(EntityType<?> type,World world,BlockState state) {
+        super((EntityType<? extends FallingBlockEntity>) type,world);
+
+
+
     }
 
-    public void setBlockState(BlockState blockState) {
-        this.blockState = blockState;
-    }
+    /*public void setBlockState(BlockState blockState) {
+        this.getClass().
+    }*/
 
-    public BlockState getBlockState() {
+    /*public BlockState getBlockState() {
         return blockState;
-    }
+    }*/
 
     protected void onFullyObserved() {
         // 生成消失的粒子效果
