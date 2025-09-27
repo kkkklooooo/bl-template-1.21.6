@@ -173,7 +173,7 @@ public class ExpandingSphereEntity extends MobEntity {
 
     private void spawnExpansionParticles() {
         // 生成表示膨胀边缘的粒子效果
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < 2500; i++) {
             double theta = random.nextDouble() * Math.PI * 2;
             double phi = random.nextDouble() * Math.PI;
             double x = this.getX() + radius * Math.cos(theta) * Math.sin(phi);
