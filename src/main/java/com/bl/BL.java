@@ -5,6 +5,7 @@ import com.bl.entity.custom.ExpandingSphereEntity;
 import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
+import net.minecraft.entity.projectile.WindChargeEntity;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.slf4j.Logger;
@@ -15,11 +16,10 @@ import static com.bl.entity.ModEntities.EXPANDING_SPHERE;
 
 public class BL implements ModInitializer {
 	public static final String MOD_ID = "bl";
-	public void createExpandingSphere(float max, Vec3d pos, World world) {
+	 public static void createExpandingSphere(float max, Vec3d pos, World world) {
 		// 假设ExpandingSphereEntity已经定义
 		ExpandingSphereEntity sphere = new ExpandingSphereEntity(EXPANDING_SPHERE, world);
-		sphere.maxRadius=max;
-		sphere.expansionRate=max/50;
+		sphere.SetMax(max);
 		sphere.setPosition(pos);
 		world.spawnEntity(sphere);
 	}

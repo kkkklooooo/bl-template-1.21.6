@@ -34,6 +34,11 @@ public class ExpandingSphereEntity extends MobEntity {
         super((EntityType<? extends MobEntity>) type, world);
         this.noClip = true;
     }
+    public void SetMax(float max)
+    {
+        this.maxRadius=max;
+        this.expansionRate=max/60;
+    }
 
     public static DefaultAttributeContainer createAttributes(){
         return MobEntity.createMobAttributes()
