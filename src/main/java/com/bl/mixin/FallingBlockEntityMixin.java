@@ -69,7 +69,7 @@ public abstract class FallingBlockEntityMixin extends Entity implements FallingB
 	private void spawnQuantumParticles(ServerWorld world) {
 		Vec3d pos = this.getPos();
 		// 生成量子效果的粒子
-		for (int i = 0; i < 3; i++) {
+		for (int i = 0; i < 2; i++) {
 			double offsetX = (this.random.nextDouble() - 0.5) * 0.5;
 			double offsetY = (this.random.nextDouble() - 0.5) * 0.5;
 			double offsetZ = (this.random.nextDouble() - 0.5) * 0.5;
@@ -110,7 +110,7 @@ public abstract class FallingBlockEntityMixin extends Entity implements FallingB
 		double dotProduct = playerLookVec.dotProduct(playerToEntity);
 
 		// 如果夹角很小（cos值接近1），说明玩家正在看这个实体
-		return dotProduct > 0.2; // 调整这个值来改变灵敏度
+		return dotProduct > 0; // 调整这个值来改变灵敏度
 	}
 
 	// 添加设置量子状态的方法
@@ -118,6 +118,7 @@ public abstract class FallingBlockEntityMixin extends Entity implements FallingB
 	public void bl$setQuantum() {
 		this.bl$isQuantum = true;
 		this.bl$viewTime = 0;
+		this.setGlowing(true);
 	}
 
 	// 添加获取量子状态的方法
