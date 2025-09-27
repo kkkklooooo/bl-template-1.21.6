@@ -57,7 +57,6 @@ public abstract class FallingBlockEntityMixin extends Entity implements FallingB
 		if (this.isOnGround()) {
 			BL.LOGGER.info("groundfuck");
 			this.discard();
-			return;
 
 		}
 
