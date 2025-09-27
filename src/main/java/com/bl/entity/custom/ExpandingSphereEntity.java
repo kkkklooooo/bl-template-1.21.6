@@ -30,9 +30,11 @@ public class ExpandingSphereEntity extends MobEntity {
     public float maxRadius = 20.0f; // 最大半径
     public float expansionRate = 0.5f; // 每Tick扩张的半径
 
+    private World ww;
     public ExpandingSphereEntity(EntityType<?> type, World world) {
         super((EntityType<? extends MobEntity>) type, world);
         this.noClip = true;
+        this.ww=world;
     }
     public void SetMax(float max)
     {
@@ -53,6 +55,7 @@ public class ExpandingSphereEntity extends MobEntity {
     @Override
     public void tick() {
         super.tick();
+        //BL.LOGGER.warn("11111111111");
         this.addStatusEffect(new StatusEffectInstance(StatusEffects.GLOWING,99999,2,false,false));
         this.setVelocity(0F,0F,0F);
 
@@ -92,10 +95,10 @@ public class ExpandingSphereEntity extends MobEntity {
         }*/
 
         // 摧毁范围内的方块（如果是客户端，需要跳过）
-        if (!this.getWorld().isClient) {
+        //if (!this.getWorld().isClient) {
             // 这是一个性能敏感的操作，需要优化
             destroyBlocksInRadius();
-        }
+        //}
     }
 
 
@@ -130,14 +133,14 @@ public class ExpandingSphereEntity extends MobEntity {
             return;
         }
 
-            FallingBlockEntity quantumBlock = FallingBlockEntity.spawnFromBlock(this.getWorld(),pos,blockState);
+            FallingBlockEntity quantumBlock = FallingBlockEntity.spawnFromBlock(this.ww,pos,blockState);
             /*QuantumBlockEntity quantumBlock = new QuantumBlockEntity(QUANTUM_BLOCK,this.getWorld());
             this.getWorld().setBlockState(pos, blockState.getFluidState().getBlockState(), 3);
             this.getWorld().spawnEntity(quantumBlock);*/
             quantumBlock.setPosition(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
         if (quantumBlock instanceof FallingBlockEntityMixinAccessor a) {
             a.bl$setQuantum();
-            BL.LOGGER.info("66666");
+            BL.LOGGER.info(String.valueOf(this.ww.isClient));
         }
 
             // 随机抛射向量
@@ -148,7 +151,8 @@ public class ExpandingSphereEntity extends MobEntity {
             );
             quantumBlock.setVelocity(velocity);
 
-            this.getWorld().spawnEntity(quantumBlock);
+
+            this.ww.spawnEntity(quantumBlock);
             // 创建量子态方块实体（类似掉落物形式）
     }
 
