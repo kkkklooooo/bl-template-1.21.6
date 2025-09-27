@@ -1,9 +1,7 @@
 package com.bl.entity.client;
 
-import com.bl.entity.custom.BLEntity;
 import com.bl.entity.custom.ExpandingSphereEntity;
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.MobEntityRenderer;
 import net.minecraft.client.render.entity.model.EntityModelLayer;

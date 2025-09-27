@@ -27,9 +27,6 @@ public abstract class FallingBlockEntityMixin extends Entity implements FallingB
 	@Unique
 	private boolean bl$isQuantum = false;
 
-	@Unique
-	private int bl$viewTime = 0;
-
 
 	public FallingBlockEntityMixin(EntityType<?> type, World world) {
 		super(type, world);
@@ -52,16 +49,6 @@ public abstract class FallingBlockEntityMixin extends Entity implements FallingB
 		if (world instanceof ServerWorld serverWorld) {
 			spawnQuantumParticles(serverWorld);
 		}
-
-		// 检查是否落地
-		if (this.isOnGround()) {
-			BL.LOGGER.info("groundfuck");
-			this.discard();
-
-		}
-
-		// 检查玩家观看
-		checkPlayerViewing();
 	}
 
 	@Unique
@@ -82,7 +69,7 @@ public abstract class FallingBlockEntityMixin extends Entity implements FallingB
 		}
 	}
 
-	@Unique
+	/*@Unique
 	private void checkPlayerViewing() {
 		// 获取周围10格内的玩家
 		Box box = new Box(this.getBlockPos()).expand(10);
@@ -98,9 +85,9 @@ public abstract class FallingBlockEntityMixin extends Entity implements FallingB
 				break; // 只要有一个玩家在看就计数
 			}
 		}
-	}
+	}*/
 
-	@Unique
+	/*@Unique
 	private boolean isPlayerLookingAt(PlayerEntity player) {
 		// 计算玩家视线方向与到实体方向的夹角
 		Vec3d playerLookVec = player.getRotationVec(1.0F).normalize();
@@ -110,13 +97,12 @@ public abstract class FallingBlockEntityMixin extends Entity implements FallingB
 
 		// 如果夹角很小（cos值接近1），说明玩家正在看这个实体
 		return dotProduct > 0; // 调整这个值来改变灵敏度
-	}
+	}*/
 
 	// 添加设置量子状态的方法
 	@Unique
 	public void bl$setQuantum() {
 		this.bl$isQuantum = true;
-		this.bl$viewTime = 0;
 		this.setGlowing(true);
 	}
 

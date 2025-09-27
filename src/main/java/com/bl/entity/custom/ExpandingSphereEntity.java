@@ -24,17 +24,15 @@ import java.util.List;
 import java.util.Random;
 
 //import static com.bl.entity.ModEntities.QUANTUM_BLOCK;
-import static com.bl.entity.ModEntities.QUANTUM_ENTITY;
 
 public class ExpandingSphereEntity extends MobEntity {
-    private float radius = 0.5f; // 初始半径
-    private final float maxRadius = 20.0f; // 最大半径
-    private final float expansionRate = 0.5f; // 每Tick扩张的半径
+    private float radius = 0.02f; // 初始半径
+    public float maxRadius = 20.0f; // 最大半径
+    public float expansionRate = 0.5f; // 每Tick扩张的半径
 
     public ExpandingSphereEntity(EntityType<?> type, World world) {
         super((EntityType<? extends MobEntity>) type, world);
         this.noClip = true;
-
     }
 
     public static DefaultAttributeContainer createAttributes(){
@@ -95,28 +93,6 @@ public class ExpandingSphereEntity extends MobEntity {
         }
     }
 
-    private void quantumizeEntity(Entity entity) {
-        // 创建一个新的"量子态"实体，它将在1秒后消失
-        QuantumEntityy quantumEntity = new QuantumEntityy(
-                QUANTUM_ENTITY, this.getWorld());
-
-        // 复制原实体的外观等信息
-        quantumEntity.setModel(entity.getType());
-        quantumEntity.setPosition(entity.getPos());
-
-        // 随机抛射向量
-        Vec3d velocity = new Vec3d(
-                (random.nextDouble() - 0.5) * 2.0,
-                random.nextDouble() * 1.5,
-                (random.nextDouble() - 0.5) * 2.0
-        );
-        quantumEntity.setVelocity(velocity);
-
-        this.getWorld().spawnEntity(quantumEntity);
-
-        // 移除原实体
-        entity.discard();
-    }
 
     private void destroyBlocksInRadius() {
         // 这是一个简化的实现，实际应用中需要考虑性能优化
@@ -144,7 +120,7 @@ public class ExpandingSphereEntity extends MobEntity {
 
         // 移除原方块
         this.getWorld().removeBlock(pos, false);
-        if(random.nextDouble()<0.95)
+        if(random.nextDouble()<0)
         {
             return;
         }
@@ -161,9 +137,9 @@ public class ExpandingSphereEntity extends MobEntity {
 
             // 随机抛射向量
             Vec3d velocity = new Vec3d(
-                    (random.nextDouble() - 0.5) * 3.0,
+                    (random.nextDouble() - 0.5) * 4.0,
                     random.nextDouble() * 2.0,
-                    (random.nextDouble() - 0.5) * 3.0
+                    (random.nextDouble() - 0.5) * 4.0
             );
             quantumBlock.setVelocity(velocity);
 
@@ -173,7 +149,7 @@ public class ExpandingSphereEntity extends MobEntity {
 
     private void spawnExpansionParticles() {
         // 生成表示膨胀边缘的粒子效果
-        for (int i = 0; i < 2500; i++) {
+        for (int i = 0; i < (int)radius*100; i++) {
             double theta = random.nextDouble() * Math.PI * 2;
             double phi = random.nextDouble() * Math.PI;
             double x = this.getX() + radius * Math.cos(theta) * Math.sin(phi);
