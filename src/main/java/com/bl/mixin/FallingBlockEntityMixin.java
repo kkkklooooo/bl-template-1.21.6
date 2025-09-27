@@ -24,8 +24,6 @@ import java.util.logging.Logger;
 @Mixin(FallingBlockEntity.class)
 public abstract class FallingBlockEntityMixin extends Entity implements FallingBlockEntityMixinAccessor {
 
-	@Unique
-	private boolean bl$isQuantum = false;
 
 
 	public FallingBlockEntityMixin(EntityType<?> type, World world) {
@@ -39,23 +37,11 @@ public abstract class FallingBlockEntityMixin extends Entity implements FallingB
 		//BL.LOGGER.info("fuuuuuuuuuuck");
 	}
 
-	@Inject(method = "tick", at = @At("HEAD"))
-	private void onTick(CallbackInfo ci) {
-		if (!this.bl$isQuantum) return;
-
-		World world = this.getWorld();
-
-		// 生成量子粒子效果
-		if (world instanceof ServerWorld serverWorld) {
-			spawnQuantumParticles(serverWorld);
-		}
-	}
-
-	@Unique
+	/*@Unique
 	private void spawnQuantumParticles(ServerWorld world) {
 		Vec3d pos = this.getPos();
 		// 生成量子效果的粒子
-		for (int i = 0; i < 2; i++) {
+		/*for (int i = 0; i < 2; i++) {
 			double offsetX = (this.random.nextDouble() - 0.5) * 0.5;
 			double offsetY = (this.random.nextDouble() - 0.5) * 0.5;
 			double offsetZ = (this.random.nextDouble() - 0.5) * 0.5;
@@ -102,13 +88,8 @@ public abstract class FallingBlockEntityMixin extends Entity implements FallingB
 	// 添加设置量子状态的方法
 	@Unique
 	public void bl$setQuantum() {
-		this.bl$isQuantum = true;
 		this.setGlowing(true);
 	}
 
-	// 添加获取量子状态的方法
-	@Unique
-	public boolean bl$isQuantum() {
-		return this.bl$isQuantum;
-	}
+
 }
