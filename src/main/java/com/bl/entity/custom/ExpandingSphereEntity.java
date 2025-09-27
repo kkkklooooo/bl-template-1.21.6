@@ -1,5 +1,6 @@
 package com.bl.entity.custom;
-
+import com.bl.BL;
+import com.bl.entity.client.FallingBlockEntityMixinAccessor;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.*;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
@@ -150,6 +151,10 @@ public class ExpandingSphereEntity extends MobEntity {
             this.getWorld().setBlockState(pos, blockState.getFluidState().getBlockState(), 3);
             this.getWorld().spawnEntity(quantumBlock);*/
             quantumBlock.setPosition(pos.getX() + 0.5, pos.getY()+1.0, pos.getZ() + 0.5);
+        if (quantumBlock instanceof FallingBlockEntityMixinAccessor a) {
+            a.bl$setQuantum();
+            BL.LOGGER.info("66666");
+        }
 
             // 随机抛射向量
             Vec3d velocity = new Vec3d(

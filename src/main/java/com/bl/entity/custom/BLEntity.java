@@ -13,6 +13,7 @@ import net.minecraft.world.World;
 import java.util.List;
 
 import static com.bl.entity.ModEntities.EXPANDING_SPHERE;
+//import org.lambdajh.lambdynamiclights.DynamicLights;
 
 public class BLEntity extends MobEntity {
 
@@ -43,6 +44,14 @@ public class BLEntity extends MobEntity {
         // 这里可以添加一些粒子效果
         spawnParticles();
 
+        /*if (this.isAlive()) {
+            // 设置光源亮度 (0 - 15)，15为最大，如火把
+            DynamicLights.setLuminance(this, 10);
+        } else {
+            // 当不需要发光时，移除光源
+            DynamicLights.setLuminance(this, 0);
+        }*/
+
         // 简单的移动逻辑（例如向目标移动或随机飘动）
         if (target != null) {
             // 向目标移动的逻辑
@@ -67,7 +76,7 @@ public class BLEntity extends MobEntity {
             // 更分散的方向向量 - 增加随机范围使粒子更分散
             double speed = 0.15 + random.nextDouble() * 0.25; // 增加速度范围
             double dx = (random.nextDouble() - 0.5) * 2 * speed;
-            double dy = (random.nextDouble() - 0.5) * 2 * speed;
+            double dy = (random.nextDouble() - 0.7) * 2 * speed;
             double dz = (random.nextDouble() - 0.5) * 2 * speed;
 
             // 添加白色电火花粒子（主要粒子效果）

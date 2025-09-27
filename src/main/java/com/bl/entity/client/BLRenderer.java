@@ -1,6 +1,7 @@
 package com.bl.entity.client;
 
 import com.bl.entity.custom.BLEntity;
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.MobEntityRenderer;
 import net.minecraft.client.render.entity.model.EntityModelLayer;
@@ -27,6 +28,10 @@ public class BLRenderer extends MobEntityRenderer<BLEntity, BLrds, blentity> {
     public Identifier getTexture(BLrds state) {
         return TEXTURE;
     }
-
+    @Override
+    public void render(BLrds livingEntityRenderState, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i) {
+        matrixStack.scale(2.0F,2.0F,2.0F);
+        super.render(livingEntityRenderState, matrixStack, vertexConsumerProvider, i);
+    }
 
 }
