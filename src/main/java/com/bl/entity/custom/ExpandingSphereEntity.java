@@ -125,7 +125,7 @@ public class ExpandingSphereEntity extends MobEntity {
 
         // 移除原方块
         this.getWorld().removeBlock(pos, false);
-        if(random.nextDouble()<0)
+        if(random.nextDouble()<0.95)
         {
             return;
         }
