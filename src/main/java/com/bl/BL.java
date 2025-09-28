@@ -5,7 +5,10 @@ import com.bl.entity.custom.ExpandingSphereEntity;
 import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.projectile.WindChargeEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.slf4j.Logger;
@@ -16,7 +19,7 @@ import static com.bl.entity.ModEntities.EXPANDING_SPHERE;
 
 public class BL implements ModInitializer {
 	public static final String MOD_ID = "bl";
-	 public static void createExpandingSphere(float max, Vec3d pos, World world) {
+	 public static void createExpandingSphere(float max, Vec3d pos, ServerWorld world) {
 		// 假设ExpandingSphereEntity已经定义
 		ExpandingSphereEntity sphere = new ExpandingSphereEntity(EXPANDING_SPHERE, world);
 		sphere.SetMax(max);
@@ -41,7 +44,7 @@ public class BL implements ModInitializer {
 		);*/
 		//Registry.register(Registries.ENTITY_TYPE, Identifier.of(MOD_ID,"blentity"), blentity);
 		ModEntities.register();
-		FabricDefaultAttributeRegistry.register(EXPANDING_SPHERE, ExpandingSphereEntity.createAttributes());
+		//FabricDefaultAttributeRegistry.register(EXPANDING_SPHERE, ExpandingSphereEntity.createAttributes());
 		LOGGER.info("Hello Fabric world!");
 	}
 }

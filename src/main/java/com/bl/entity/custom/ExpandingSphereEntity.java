@@ -25,22 +25,30 @@ import java.util.Random;
 
 //import static com.bl.entity.ModEntities.QUANTUM_BLOCK;
 
-public class ExpandingSphereEntity extends MobEntity {
-    private float radius = 0.02f; // 初始半径
+public class ExpandingSphereEntity extends Entity {
+    private float radius = 1f; // 初始半径
     public float maxRadius = 20.0f; // 最大半径
     public float expansionRate = 0.5f; // 每Tick扩张的半径
+    public boolean isinit=false;
 
     public ExpandingSphereEntity(EntityType<?> type, World world) {
-        super((EntityType<? extends MobEntity>) type, world);
+        super((EntityType<? extends Entity>) type, world);
         this.noClip = true;
     }
+
+    @Override
+    protected void initDataTracker(DataTracker.Builder builder) {
+
+    }
+
     public void SetMax(float max)
     {
         this.maxRadius=max;
         this.expansionRate=max/60;
+        isinit=true;
     }
 
-    public static DefaultAttributeContainer createAttributes(){
+    /*public static DefaultAttributeContainer createAttributes(){
         return MobEntity.createMobAttributes()
                 .add(EntityAttributes.MAX_HEALTH, 33550336.0)
                 .add(EntityAttributes.MOVEMENT_SPEED, 1f)
@@ -48,12 +56,12 @@ public class ExpandingSphereEntity extends MobEntity {
                 .add(EntityAttributes.ATTACK_DAMAGE, 0.5f)
                 .add(EntityAttributes.FOLLOW_RANGE, 10)
                 .build();
-    }
+    }*/
 
     @Override
     public void tick() {
         super.tick();
-        this.addStatusEffect(new StatusEffectInstance(StatusEffects.GLOWING,99999,2,false,false));
+        //this.addStatusEffect(new StatusEffectInstance(StatusEffects.GLOWING,99999,2,false,false));
         this.setVelocity(0F,0F,0F);
 
         // 扩大半径
@@ -74,6 +82,16 @@ public class ExpandingSphereEntity extends MobEntity {
     @Override
     public boolean damage(ServerWorld world, DamageSource source, float amount) {
         return false;
+    }
+
+    @Override
+    protected void readCustomData(ReadView view) {
+
+    }
+
+    @Override
+    protected void writeCustomData(WriteView view) {
+
     }
 
     private void destroyInRadius() {
