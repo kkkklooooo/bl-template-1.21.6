@@ -61,6 +61,10 @@ public class ExpandingSphereEntity extends Entity {
     @Override
     public void tick() {
         super.tick();
+        if(!isinit)
+        {
+            return;
+        }
         //this.addStatusEffect(new StatusEffectInstance(StatusEffects.GLOWING,99999,2,false,false));
         this.setVelocity(0F,0F,0F);
 
@@ -152,7 +156,7 @@ public class ExpandingSphereEntity extends Entity {
             /*QuantumBlockEntity quantumBlock = new QuantumBlockEntity(QUANTUM_BLOCK,this.getWorld());
             this.getWorld().setBlockState(pos, blockState.getFluidState().getBlockState(), 3);
             this.getWorld().spawnEntity(quantumBlock);*/
-            quantumBlock.setPosition(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
+            quantumBlock.setPosition(pos.getX() + 0.5, pos.getY()+0.5, pos.getZ() + 0.5);
         if (quantumBlock instanceof FallingBlockEntityMixinAccessor a) {
             a.bl$setQuantum();
             BL.LOGGER.info("66666");
@@ -160,9 +164,9 @@ public class ExpandingSphereEntity extends Entity {
 
             // 随机抛射向量
             Vec3d velocity = new Vec3d(
-                    (random.nextDouble() - 0.5) * 4.0,
+                    (random.nextDouble() - 0.5) * 2.0,
                     random.nextDouble() * 2.0,
-                    (random.nextDouble() - 0.5) * 4.0
+                    (random.nextDouble() - 0.5) * 2.0
             );
             quantumBlock.setVelocity(velocity);
 
