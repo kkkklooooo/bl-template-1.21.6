@@ -32,6 +32,9 @@ public class ExpandingSphereEntity extends Entity {
     public float expansionRate = 0.5f; // 每Tick扩张的半径
     public boolean isinit=false;
 
+    public float factor = 3f;
+    public float attenuationFactor = 1;
+    public float up =1;
     public ExpandingSphereEntity(EntityType<?> type, World world) {
         super((EntityType<? extends Entity>) type, world);
         this.noClip = true;
@@ -79,12 +82,38 @@ public class ExpandingSphereEntity extends Entity {
         destroyInRadius();
 
 
+        ImpulseEntities();
 
 
         // 达到最大半径后消失
         if (radius >= maxRadius) {
             this.discard();
         }
+    }
+
+    private void ImpulseEntities() {
+        Box b = this.getBoundingBox().expand(radius);
+        List<Entity> l= this.getWorld().getEntitiesByClass(Entity.class,b,entity -> entity.squaredDistanceTo(this)<=radius*radius);
+        l.forEach(entity -> {
+            // 计算实体与当前对象的距离
+            double dx = entity.getX() - this.getX();
+            double dy = entity.getY() - this.getY();
+            double dz = entity.getZ() - this.getZ();
+            double distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+
+            // 计算衰减因子（距离越远，影响越小）
+            double attenuation = 1.0 / (1.0 + distance * attenuationFactor); // attenuationFactor为衰减系数
+
+            // 或者使用其他衰减公式，比如平方反比
+            // double attenuation = 1.0 / (1.0 + distance * distance * attenuationFactor);
+
+            // 应用衰减后的速度
+            entity.setVelocity(
+                    dx * factor * attenuation,
+                    dy * factor * attenuation + up,
+                    dz * factor * attenuation
+            );
+        });
     }
 
     @Override
