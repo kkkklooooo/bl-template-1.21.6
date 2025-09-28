@@ -4,8 +4,8 @@
 	"compatibilityLevel": "JAVA_21",
 	"mixins": [
 		"FallingBlockEntityMixin",
-		"WindChargeEntityMixin",
-		"FuckMixin"
+		"MaceMixin",
+		"WindChargeMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

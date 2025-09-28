@@ -11,9 +11,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(WindChargeEntity.class)
-public class FuckMixin {
+public class WindChargeMixin {
     @Inject(method="createExplosion",at=@At("HEAD"))
     protected void createExplosion(Vec3d pos, CallbackInfo ci) {
-        BL.createExpandingSphere(10.0f,((WindChargeEntity)(Object)this).getPos(),((WindChargeEntity)(Object)this).getWorld().isClient?null: (net.minecraft.server.world.ServerWorld) ((AbstractWindChargeEntity)(Object)this).getWorld());
+        BL.createExpandingSphere(3.0f,((WindChargeEntity)(Object)this).getPos(),((WindChargeEntity)(Object)this).getWorld().isClient?null: (net.minecraft.server.world.ServerWorld) ((AbstractWindChargeEntity)(Object)this).getWorld());
+        //ci.cancel();
     }
 }

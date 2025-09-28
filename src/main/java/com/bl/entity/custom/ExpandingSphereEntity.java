@@ -1,7 +1,9 @@
 package com.bl.entity.custom;
 import com.bl.BL;
 import com.bl.entity.client.FallingBlockEntityMixinAccessor;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.*;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
@@ -11,11 +13,15 @@ import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.storage.ReadView;
 import net.minecraft.storage.WriteView;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
@@ -24,12 +30,13 @@ import net.minecraft.world.World;
 import java.util.List;
 import java.util.Random;
 
+
 //import static com.bl.entity.ModEntities.QUANTUM_BLOCK;
 
 public class ExpandingSphereEntity extends Entity {
-    private float radius = 1f; // 初始半径
-    public float maxRadius = 20.0f; // 最大半径
-    public float expansionRate = 0.5f; // 每Tick扩张的半径
+    private double radius = 1f; // 初始半径
+    public double maxRadius = 20.0f; // 最大半径
+    public double expansionRate = 1f; // 每Tick扩张的半径
     public boolean isinit=false;
 
     public float factor = 3f;
@@ -45,10 +52,9 @@ public class ExpandingSphereEntity extends Entity {
 
     }
 
-    public void SetMax(float max)
+    public void SetMax(double max)
     {
         this.maxRadius=max;
-        this.expansionRate=max/60;
         isinit=true;
     }
 
@@ -174,13 +180,22 @@ public class ExpandingSphereEntity extends Entity {
 
     private void quantumizeBlock(BlockPos pos) {
         BlockState blockState = this.getWorld().getBlockState(pos);
-        if (blockState.isAir() || blockState.getHardness(this.getWorld(), pos) < 0) {
+        Identifier id=Registries.BLOCK.getId(blockState.getBlock());
+        if (blockState.isAir() || id.equals(Identifier.of("minecraft", "bedrock"))||id.getPath().startsWith("command_block")||id.equals(Identifier.of("minecraft", "end_portal_frame"))) {
             return; // 跳过空气和不可破坏的方块（如基岩）
+        }
+        Block block=blockState.getBlock();
+        if (block == Blocks.WATER) {
+            this.getWorld().setBlockState(pos,Blocks.AIR.getDefaultState(),3);
+            // 处理水
+        } else if (block == Blocks.LAVA) {
+            this.getWorld().setBlockState(pos,Blocks.AIR.getDefaultState(),3);
+            // 处理岩浆
         }
 
         // 移除原方块
         this.getWorld().removeBlock(pos, false);
-        if(random.nextDouble()<1.0f-5f/(radius*radius))
+        if(random.nextDouble()<1.0f-343f/(radius*radius*radius))
         {
             return;
         }
@@ -192,7 +207,7 @@ public class ExpandingSphereEntity extends Entity {
             quantumBlock.setPosition(pos.getX() + 0.5, pos.getY()+0.5, pos.getZ() + 0.5);
         if (quantumBlock instanceof FallingBlockEntityMixinAccessor a) {
             a.bl$setQuantum();
-            BL.LOGGER.info("66666");
+            //BL.LOGGER.info("66666");
         }
 
             // 随机抛射向量
@@ -229,7 +244,7 @@ public class ExpandingSphereEntity extends Entity {
                 this.getWorld().addParticleClient(ParticleTypes.ELECTRIC_SPARK,
                         x, y, z, 0, 0, 0);
             }else{
-                BL.LOGGER.warn("Fuck Server");
+                //BL.LOGGER.warn("Fuck Server");
             }
 
         }
@@ -239,10 +254,10 @@ public class ExpandingSphereEntity extends Entity {
     }
     protected void readCustomDataFromNbt(NbtCompound nbt) {
         // 从NBT读取数据
-        this.radius = nbt.getFloat("Radius").orElse(0f);
+        this.radius = nbt.getDouble("Radius").orElse(0.0);
     }
     protected void writeCustomDataToNbt(NbtCompound nbt) {
         // 写入数据到NBT
-        nbt.putFloat("Radius", this.radius);
+        nbt.putDouble("Radius", this.radius);
     }
 }
