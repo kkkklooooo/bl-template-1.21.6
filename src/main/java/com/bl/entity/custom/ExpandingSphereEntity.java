@@ -2,6 +2,7 @@ package com.bl.entity.custom;
 import com.bl.BL;
 import com.bl.entity.client.FallingBlockEntityMixinAccessor;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.*;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -71,11 +72,14 @@ public class ExpandingSphereEntity extends Entity {
         // 扩大半径
         radius += expansionRate;
 
+        // 生成膨胀效果的粒子
+        spawnExpansionParticles();
+
         // 摧毁范围内的实体和方块
         destroyInRadius();
 
-        // 生成膨胀效果的粒子
-        spawnExpansionParticles();
+
+
 
         // 达到最大半径后消失
         if (radius >= maxRadius) {
@@ -183,8 +187,22 @@ public class ExpandingSphereEntity extends Entity {
             double y = this.getY() + radius * Math.cos(phi);
             double z = this.getZ() + radius * Math.sin(theta) * Math.sin(phi);
 
-            this.getWorld().addParticleClient(ParticleTypes.ELECTRIC_SPARK,
-                    x, y, z, 0, 0, 0);
+
+            //if(MinecraftClient.getInstance().isOnThread()){
+            MinecraftClient.getInstance().execute(() -> {
+                MinecraftClient.getInstance().world.addParticleClient(ParticleTypes.ELECTRIC_SPARK, x, y, z, 0, 0, 0);
+            });
+            ;
+            //}
+
+
+            if(this.getWorld().isClient()){
+                this.getWorld().addParticleClient(ParticleTypes.ELECTRIC_SPARK,
+                        x, y, z, 0, 0, 0);
+            }else{
+                BL.LOGGER.warn("Fuck Server");
+            }
+
         }
     }
     protected void initDataTracker() {
