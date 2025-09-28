@@ -25,24 +25,30 @@ import java.util.Random;
 
 //import static com.bl.entity.ModEntities.QUANTUM_BLOCK;
 
-public class ExpandingSphereEntity extends MobEntity {
-    private float radius = 0.02f; // 初始半径
+public class ExpandingSphereEntity extends Entity {
+    private float radius = 1f; // 初始半径
     public float maxRadius = 20.0f; // 最大半径
     public float expansionRate = 0.5f; // 每Tick扩张的半径
+    public boolean isinit=false;
 
-    private World ww;
     public ExpandingSphereEntity(EntityType<?> type, World world) {
-        super((EntityType<? extends MobEntity>) type, world);
+        super((EntityType<? extends Entity>) type, world);
         this.noClip = true;
-        this.ww=world;
     }
+
+    @Override
+    protected void initDataTracker(DataTracker.Builder builder) {
+
+    }
+
     public void SetMax(float max)
     {
         this.maxRadius=max;
         this.expansionRate=max/60;
+        isinit=true;
     }
 
-    public static DefaultAttributeContainer createAttributes(){
+    /*public static DefaultAttributeContainer createAttributes(){
         return MobEntity.createMobAttributes()
                 .add(EntityAttributes.MAX_HEALTH, 33550336.0)
                 .add(EntityAttributes.MOVEMENT_SPEED, 1f)
@@ -50,13 +56,16 @@ public class ExpandingSphereEntity extends MobEntity {
                 .add(EntityAttributes.ATTACK_DAMAGE, 0.5f)
                 .add(EntityAttributes.FOLLOW_RANGE, 10)
                 .build();
-    }
+    }*/
 
     @Override
     public void tick() {
         super.tick();
-        //BL.LOGGER.warn("11111111111");
-        this.addStatusEffect(new StatusEffectInstance(StatusEffects.GLOWING,99999,2,false,false));
+        if(!isinit)
+        {
+            return;
+        }
+        //this.addStatusEffect(new StatusEffectInstance(StatusEffects.GLOWING,99999,2,false,false));
         this.setVelocity(0F,0F,0F);
 
         // 扩大半径
@@ -79,6 +88,16 @@ public class ExpandingSphereEntity extends MobEntity {
         return false;
     }
 
+    @Override
+    protected void readCustomData(ReadView view) {
+
+    }
+
+    @Override
+    protected void writeCustomData(WriteView view) {
+
+    }
+
     private void destroyInRadius() {
         // 获取范围内的所有实体
         /*Box box = new Box(
@@ -95,10 +114,10 @@ public class ExpandingSphereEntity extends MobEntity {
         }*/
 
         // 摧毁范围内的方块（如果是客户端，需要跳过）
-        //if (!this.getWorld().isClient) {
+        if (!this.getWorld().isClient) {
             // 这是一个性能敏感的操作，需要优化
             destroyBlocksInRadius();
-        //}
+        }
     }
 
 
@@ -128,31 +147,30 @@ public class ExpandingSphereEntity extends MobEntity {
 
         // 移除原方块
         this.getWorld().removeBlock(pos, false);
-        if(random.nextDouble()<0.95)
+        if(random.nextDouble()<1.0f-5f/(radius*radius))
         {
             return;
         }
 
-            FallingBlockEntity quantumBlock = FallingBlockEntity.spawnFromBlock(this.ww,pos,blockState);
+            FallingBlockEntity quantumBlock = FallingBlockEntity.spawnFromBlock(this.getWorld(),pos,blockState);
             /*QuantumBlockEntity quantumBlock = new QuantumBlockEntity(QUANTUM_BLOCK,this.getWorld());
             this.getWorld().setBlockState(pos, blockState.getFluidState().getBlockState(), 3);
             this.getWorld().spawnEntity(quantumBlock);*/
-            quantumBlock.setPosition(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
+            quantumBlock.setPosition(pos.getX() + 0.5, pos.getY()+0.5, pos.getZ() + 0.5);
         if (quantumBlock instanceof FallingBlockEntityMixinAccessor a) {
             a.bl$setQuantum();
-            BL.LOGGER.info(String.valueOf(this.ww.isClient));
+            BL.LOGGER.info("66666");
         }
 
             // 随机抛射向量
             Vec3d velocity = new Vec3d(
-                    (random.nextDouble() - 0.5) * 4.0,
+                    (random.nextDouble() - 0.5) * 2.0,
                     random.nextDouble() * 2.0,
-                    (random.nextDouble() - 0.5) * 4.0
+                    (random.nextDouble() - 0.5) * 2.0
             );
             quantumBlock.setVelocity(velocity);
 
-
-            this.ww.spawnEntity(quantumBlock);
+            this.getWorld().spawnEntity(quantumBlock);
             // 创建量子态方块实体（类似掉落物形式）
     }
 

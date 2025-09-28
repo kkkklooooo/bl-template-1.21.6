@@ -1,6 +1,7 @@
 package com.bl.entity;
 
 import com.bl.entity.custom.*;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.registry.Registries;

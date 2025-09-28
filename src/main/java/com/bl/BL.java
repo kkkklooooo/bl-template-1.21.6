@@ -5,8 +5,10 @@ import com.bl.entity.custom.ExpandingSphereEntity;
 import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
-import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.projectile.WindChargeEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.slf4j.Logger;
@@ -17,21 +19,13 @@ import static com.bl.entity.ModEntities.EXPANDING_SPHERE;
 
 public class BL implements ModInitializer {
 	public static final String MOD_ID = "bl";
-	 public static void createExpandingSphere(float max, Vec3d pos, World world) {
+	 public static void createExpandingSphere(float max, Vec3d pos, ServerWorld world) {
 		// 假设ExpandingSphereEntity已经定义
-
 		ExpandingSphereEntity sphere = new ExpandingSphereEntity(EXPANDING_SPHERE, world);
 		sphere.SetMax(max);
 		sphere.setPosition(pos);
 		world.spawnEntity(sphere);
-		 if(world.isClient()){
-			 throw new RuntimeException("Fuck Client World");
-		 }
-		 //ExpandingSphereEntity sphere=EXPANDING_SPHERE.create(world, SpawnReason.COMMAND);
-		 //sphere.SetMax(max);
-		 //sphere.setPosition(pos);
-		 //world.spawnEntity(sphere);
-	 }
+	}
 
 	// This logger is used to write text to the console and the log file.
 	// It is considered best practice to use your mod id as the logger's name.
@@ -50,7 +44,7 @@ public class BL implements ModInitializer {
 		);*/
 		//Registry.register(Registries.ENTITY_TYPE, Identifier.of(MOD_ID,"blentity"), blentity);
 		ModEntities.register();
-		FabricDefaultAttributeRegistry.register(EXPANDING_SPHERE, ExpandingSphereEntity.createAttributes());
+		//FabricDefaultAttributeRegistry.register(EXPANDING_SPHERE, ExpandingSphereEntity.createAttributes());
 		LOGGER.info("Hello Fabric world!");
 	}
 }
