@@ -32,6 +32,7 @@ public abstract class MaceMixin {
         {
             RegistryEntry<Enchantment> wbEntry=attacker.getWorld().getRegistryManager().getEntryOrThrow(Enchantments.WIND_BURST);
             int level= EnchantmentHelper.getLevel(wbEntry,stack);
+            level=3;
             if(level>0)
             {
                 double s;
@@ -52,7 +53,7 @@ public abstract class MaceMixin {
                 }
                 BL.createExpandingSphere(s,target.getPos(),(ServerWorld) target.getWorld());
                 BL.LOGGER.info(String.valueOf(attacker));
-                attacker.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOW_FALLING, level+100,0,false,true));
+                attacker.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOW_FALLING, level+60,0,false,true));
 
             }
         }

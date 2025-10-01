@@ -114,9 +114,14 @@ public class ExpandingSphereEntity extends Entity {
             // double attenuation = 1.0 / (1.0 + distance * distance * attenuationFactor);
 
             // 应用衰减后的速度
-            entity.setVelocity(
+            /*entity.setVelocity(
                     dx * factor * attenuation,
                     dy * factor * attenuation + up,
+                    dz * factor * attenuation
+            );*/
+            entity.setVelocity(
+                    dx * factor * attenuation,
+                    dy * factor * attenuation,
                     dz * factor * attenuation
             );
         });
@@ -184,6 +189,10 @@ public class ExpandingSphereEntity extends Entity {
         if (blockState.isAir() || id.equals(Identifier.of("minecraft", "bedrock"))||id.getPath().startsWith("command_block")||id.equals(Identifier.of("minecraft", "end_portal_frame"))) {
             return; // 跳过空气和不可破坏的方块（如基岩）
         }
+        /*if(pos.getX() == this.getBlockX()&&pos.getZ()==this.getBlockZ())
+        {
+            return;
+        }*/
         Block block=blockState.getBlock();
         if (block == Blocks.WATER) {
             this.getWorld().setBlockState(pos,Blocks.AIR.getDefaultState(),3);
