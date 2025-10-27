@@ -2,6 +2,7 @@ package com.bl.mixin;
 
 import com.bl.BL;
 import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentEffectContext;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
@@ -32,7 +33,6 @@ public abstract class MaceMixin {
         {
             RegistryEntry<Enchantment> wbEntry=attacker.getWorld().getRegistryManager().getEntryOrThrow(Enchantments.WIND_BURST);
             int level= EnchantmentHelper.getLevel(wbEntry,stack);
-            level=3;
             if(level>0)
             {
                 double s;

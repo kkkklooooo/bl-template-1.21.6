@@ -1,16 +1,17 @@
 {
-	"required": true,
-	"package": "com.bl.mixin",
-	"compatibilityLevel": "JAVA_21",
-	"mixins": [
-		"FallingBlockEntityMixin",
-		"MaceMixin",
-		"WindChargeMixin"
-	],
-	"injectors": {
-		"defaultRequire": 1
-	},
-	"overwrites": {
-		"requireAnnotations": true
+  "required": true,
+  "package": "com.bl.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "FallingBlockEntityMixin",
+    "ItemMixin",
+    "MaceMixin",
+    "WindChargeMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
 	}
 }

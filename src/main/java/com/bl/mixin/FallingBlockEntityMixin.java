@@ -1,5 +1,6 @@
 package com.bl.mixin;// package com.bl.mixin;
 
+import com.bl.BL;
 import com.bl.entity.client.FallingBlockEntityMixinAccessor;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
@@ -9,6 +10,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.function.BooleanBiFunction;
 import net.minecraft.util.hit.BlockHitResult;
@@ -32,6 +34,7 @@ import java.util.List;
 public abstract class FallingBlockEntityMixin extends Entity implements FallingBlockEntityMixinAccessor {
 	@Unique
 	boolean isq=false;
+	@Unique
 	private static List<BlockPos> getAllOnGroundBlocks(Entity entity) {
 		List<BlockPos> groundBlocks = new ArrayList<>();
 		World world = entity.getWorld();
@@ -68,6 +71,7 @@ public abstract class FallingBlockEntityMixin extends Entity implements FallingB
 		return groundBlocks;
 	}
 
+	@Unique
 	private static boolean checkBlockCollision(BlockState blockState, World world, BlockPos pos, Box checkBox) {
 		VoxelShape collisionShape = blockState.getCollisionShape(world, pos);
 
@@ -87,6 +91,7 @@ public abstract class FallingBlockEntityMixin extends Entity implements FallingB
 		{
 			return super.isOnGround();
 		}
+
 		if(super.isOnGround())
 		{
 			PlayerEntity player=this.getWorld().getClosestPlayer(this,100);
@@ -103,8 +108,14 @@ public abstract class FallingBlockEntityMixin extends Entity implements FallingB
 					return super.isOnGround();
 				}
 
+				ActionResult result=stack.useOnBlock(new ItemUsageContext(player,Hand.OFF_HAND,new BlockHitResult(this.getPos(), Direction.UP,poses.getFirst(),false)));
 
-				stack.useOnBlock(new ItemUsageContext(player.getWorld(),player,Hand.OFF_HAND,stack,new BlockHitResult(this.getPos(), Direction.UP,poses.getFirst(),false)));
+				if(result== ActionResult.FAIL||result==ActionResult.PASS)
+				{
+					stack.use(player.getWorld(),player,Hand.OFF_HAND);
+				}
+
+				stack.setCount(stack.getMaxCount());
 			}
 			this.discard();
 		}

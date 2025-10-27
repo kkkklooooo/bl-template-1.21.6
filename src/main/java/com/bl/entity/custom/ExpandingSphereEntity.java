@@ -88,7 +88,7 @@ public class ExpandingSphereEntity extends Entity {
         destroyInRadius();
 
 
-        ImpulseEntities();
+        //ImpulseEntities();
 
 
         // 达到最大半径后消失
@@ -221,9 +221,9 @@ public class ExpandingSphereEntity extends Entity {
 
             // 随机抛射向量
             Vec3d velocity = new Vec3d(
-                    (random.nextDouble() - 0.5) * 2.0,
-                    random.nextDouble() * 2.0,
-                    (random.nextDouble() - 0.5) * 2.0
+                    (random.nextDouble() - 0.5) * 0.5,
+                    (random.nextDouble()+1) * 1.2,
+                    (random.nextDouble() - 0.5) * 0.5
             );
             quantumBlock.setVelocity(velocity);
 
