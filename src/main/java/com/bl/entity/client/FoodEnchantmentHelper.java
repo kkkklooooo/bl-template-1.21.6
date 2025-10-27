@@ -22,6 +22,7 @@ import org.spongepowered.asm.mixin.Unique;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.UUID;
 
 public class FoodEnchantmentHelper {
@@ -156,6 +157,7 @@ public class FoodEnchantmentHelper {
 
         if (windBurstLevel > 0) {
             // 使用实体作为所有者创建风弹
+            SoundPlayer.playCustomSoundAtPosition(entity.getWorld(), entity.getPos(), SoundPlayer.Sounds.p, 500.0f, 1);
             WindChargeEntity windCharge = new WindChargeEntity(MinecraftClient.getInstance().player, world, entity.getX(), entity.getY(), entity.getZ());
 
             try {
@@ -192,6 +194,7 @@ public class FoodEnchantmentHelper {
         int efficiencyLevel = EnchantmentHelper.getLevel(wbEntry, stack);
         if (efficiencyLevel > 0) {
             float reductionFactor = 1.0F - (efficiencyLevel * 0.2F);
+
             newTime = Math.max(1, (int)(baseTime * reductionFactor));
         }
 

@@ -9,6 +9,7 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 public class SoundPlayer {
@@ -21,7 +22,7 @@ public class SoundPlayer {
     }
 
 
-    public static void playCustomSoundAtPosition(World world, BlockPos pos,
+    public static void playCustomSoundAtPosition(World world, Vec3d pos,
                                                  Sounds Type, float volume, float pitch) {
         if (!world.isClient()) return;
 
