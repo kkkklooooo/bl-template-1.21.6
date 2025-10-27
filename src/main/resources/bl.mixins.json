@@ -6,6 +6,7 @@
     "FallingBlockEntityMixin",
     "ItemMixin",
     "MaceMixin",
+    "VillagerEntityMixin",
     "WindChargeMixin"
   ],
   "injectors": {
