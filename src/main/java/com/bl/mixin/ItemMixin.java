@@ -42,6 +42,12 @@ public class ItemMixin {
             // 应用所有附魔效果
             FoodEnchantmentHelper.applyAllEnchantmentEffects(stack, world, user);
         }
+        RegistryEntry<Enchantment> wbEntry1 = world.getRegistryManager().getEntryOrThrow(Enchantments.WIND_BURST);
+        int windBurstLevel = EnchantmentHelper.getLevel(wbEntry1, stack);
+
+        if (windBurstLevel > 0) {
+            SoundPlayer.playCustomSoundAtPosition(user.getWorld(), user.getPos(), SoundPlayer.Sounds.p, 100.0f, 1);
+        }
         RegistryEntry<Enchantment> wbEntry = user.getWorld().getRegistryManager().getEntryOrThrow(Enchantments.EFFICIENCY);
         int efficiencyLevel = EnchantmentHelper.getLevel(wbEntry, stack);
         if (efficiencyLevel > 0) {

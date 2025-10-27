@@ -1,6 +1,7 @@
 package com.bl.mixin;
 
 import com.bl.entity.client.FoodEnchantmentHelper;
+import com.bl.entity.client.SoundPlayer;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.ConsumableComponent;
 import net.minecraft.component.type.FoodComponent;
@@ -60,6 +61,11 @@ public class VillagerEntityMixin {
                                 ItemStack consumedStack = itemStack.copy();
                                 consumedStack.setCount(1);
                                 FoodEnchantmentHelper.applyAllEnchantmentEffects(consumedStack, world, villager);
+                                RegistryEntry<Enchantment> wbEntry1 = world.getRegistryManager().getEntryOrThrow(Enchantments.WIND_BURST);
+                                int windBurstLevel = EnchantmentHelper.getLevel(wbEntry1, consumedStack);
+                                if (windBurstLevel > 0) {
+                                    SoundPlayer.playCustomSoundAtPosition(villager.getWorld(), villager.getPos(), SoundPlayer.Sounds.p, 100.0f, 1);
+                                }
                             }
 
                             if (!this.canEatFood()) {

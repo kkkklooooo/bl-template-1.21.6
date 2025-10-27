@@ -85,6 +85,7 @@ public class FoodEnchantmentHelper {
      */
     public static void applyAllEnchantmentEffects(ItemStack stack, World world, LivingEntity entity) {
         if (!isFood(stack)) return;
+        //SoundPlayer.playCustomSoundAtPosition(entity.getWorld(), entity.getPos(), SoundPlayer.Sounds.p, 100.0f, 1);
 
         // 只在服务器端执行效果
         if (world.isClient) return;
@@ -157,7 +158,7 @@ public class FoodEnchantmentHelper {
 
         if (windBurstLevel > 0) {
             // 使用实体作为所有者创建风弹
-            SoundPlayer.playCustomSoundAtPosition(entity.getWorld(), entity.getPos(), SoundPlayer.Sounds.p, 500.0f, 1);
+            SoundPlayer.playCustomSoundAtPosition(entity.getWorld(), entity.getPos(), SoundPlayer.Sounds.p, 100.0f, 1);
             WindChargeEntity windCharge = new WindChargeEntity(MinecraftClient.getInstance().player, world, entity.getX(), entity.getY(), entity.getZ());
 
             try {

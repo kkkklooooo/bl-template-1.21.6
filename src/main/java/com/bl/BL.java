@@ -38,8 +38,8 @@ public class BL implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		Registry.register(Registries.SOUND_EVENT, Identifier.of(MOD_ID, "ppp"),
-				SoundEvent.of(Identifier.of(MOD_ID, "ppp")));
+		/*Registry.register(Registries.SOUND_EVENT, Identifier.of(MOD_ID, "ppp"),
+				SoundEvent.of(Identifier.of(MOD_ID, "ppp")));*/
 		// This code runs as soon as Minecraft is in a mod-load-ready state.
 		// However, some things (like resources) may still be uninitialized.
 		// Proceed with mild caution.
