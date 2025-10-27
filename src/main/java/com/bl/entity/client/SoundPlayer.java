@@ -27,7 +27,7 @@ public class SoundPlayer {
         if (!world.isClient()) return;
 
         Identifier i = switch (Type){
-            case p -> Identifier.of("bl","p");
+            case p -> Identifier.of("bl","ppp");
             case a -> Identifier.of("bl","1");
             case b -> Identifier.of("bl","2");
             case c -> Identifier.of("bl","3");
