@@ -1,0 +1,26 @@
+{
+  "ppp": {
+    "sounds": [
+      "bl:p"
+    ],
+    "subtitle": "subtitles.bl.P"
+  },
+  "1": {
+    "sounds": [
+      "bl:1"
+    ],
+    "subtitle": "subtitles.bl.P"
+  },
+  "2": {
+    "sounds": [
+      "bl:2"
+    ],
+    "subtitle": "subtitles.bl.P"
+  },
+  "3": {
+    "sounds": [
+      "bl:3"
+    ],
+    "subtitle": "subtitles.bl.P"
+  }
+}

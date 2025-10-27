@@ -1,5 +1,6 @@
 package com.bl.mixin;
 
+import com.bl.entity.client.SoundPlayer;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.ConsumableComponent;
 import net.minecraft.component.type.FoodComponent;
@@ -15,6 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
@@ -61,6 +63,8 @@ public class ItemMixin {
 
         FoodComponent food = stack.get(DataComponentTypes.FOOD);
         if (food == null) return;
+
+        SoundPlayer.playCustomSoundAtPosition(world,player.getBlockPos(), SoundPlayer.Sounds.p,1000,1);
 
         // 只在服务器端执行效果
         if (!world.isClient) {
