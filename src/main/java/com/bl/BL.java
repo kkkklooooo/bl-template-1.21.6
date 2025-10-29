@@ -76,7 +76,7 @@ public class BL implements ModInitializer {
 
 		UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
 			if (world.isClient()) {
-				player.addVelocity(0,3,0);
+				//player.addVelocity(0,3,0);
 				//player.setPos(player.getX(),player.getY()+50,player.getZ());
 				return ActionResult.PASS;
 			}
