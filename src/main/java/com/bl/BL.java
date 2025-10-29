@@ -66,7 +66,11 @@ public class BL implements ModInitializer {
 		LOGGER.info("Terrain Transformation Mod Initialized!");
 
 		UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
-			if (world.isClient()) return ActionResult.PASS;
+			if (world.isClient()) {
+				player.addVelocity(0,3,0);
+				//player.setPos(player.getX(),player.getY()+50,player.getZ());
+				return ActionResult.PASS;
+			}
 
 			ItemStack itemStack = player.getStackInHand(hand);
 			BlockPos pos = hitResult.getBlockPos();
@@ -78,8 +82,13 @@ public class BL implements ModInitializer {
 				if (!player.isCreative()) {
 					itemStack.decrement(1);
 				}
+				BL.LOGGER.warn("操你妈的");
 
-				startTerrainTransformation((ServerWorld) world, pos, player);
+				world.getServer().execute(()->{
+
+					startTerrainTransformation((ServerWorld) world, pos, player);
+				});
+
 				return ActionResult.SUCCESS;
 			}
 

@@ -1,7 +1,9 @@
 package com.bl.entity.client;
 
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Heightmap;
@@ -19,8 +21,10 @@ public class TerrainTransformationTask {
     private final int maxRadius = 64;
     private boolean isActive = false;
 
+    private int tickInterval = 1;
+
     // 新增：控制改造速度的间隔变量，每 interval 次才改造圆环地形
-    private final int interval = 3; // 例如设置为3，表示每3个半径才改造一次
+    private final int interval = 1; // 例如设置为3，表示每3个半径才改造一次
     private int radiusCounter = 0; // 用于计数当前累计的半径数
 
     public TerrainTransformationTask(ServerWorld world, BlockPos center, BlockPos referenceCenter, net.minecraft.entity.player.PlayerEntity player) {
@@ -28,16 +32,29 @@ public class TerrainTransformationTask {
         this.center = center;
         this.referenceCenter = referenceCenter;
         this.player = player;
+        RegisterToTick();
     }
 
     public void start() {
+        //player.addVelocity(0,10,0);
         this.isActive = true;
-        scheduleNextTick();
+
+        //scheduleNextTick();
     }
 
     public void stop() {
         this.isActive = false;
     }
+
+
+    private void RegisterToTick(){
+        ServerTickEvents.END_SERVER_TICK.register((MinecraftServer server)->{
+            if(this.isActive){
+                processNextStep();
+            }
+        });
+    }
+
 
     private void scheduleNextTick() {
         world.getServer().execute(() -> {
@@ -61,7 +78,7 @@ public class TerrainTransformationTask {
             player.sendMessage(net.minecraft.text.Text.literal("§7准备改造半径: " + currentRadius + "格 (等待中 " + radiusCounter + "/" + interval + ")"), false);
             //currentRadius++;
             if (isActive) {
-                scheduleNextTick();
+                //scheduleNextTick();
             }
             return;
         }
@@ -82,7 +99,7 @@ public class TerrainTransformationTask {
         currentRadius++;
 
         if (isActive) {
-            scheduleNextTick();
+            //scheduleNextTick();
         }
     }
 
@@ -239,11 +256,68 @@ public class TerrainTransformationTask {
     /**
      * 复制地形结构到目标位置
      */
+//    private void copyTerrainStructure(int targetX, int targetZ, ReferenceTerrainInfo reference) {
+//        // 复制主要地形方块
+//        if (reference.blocks != null && reference.heights != null) {
+//            for (int i = 0; i < reference.blocks.length; i++) {
+//                int targetY = reference.heights[i];
+//                BlockPos targetPos = new BlockPos(targetX, targetY, targetZ);
+//                BlockState referenceState = reference.blocks[i];
+//
+//                // 只设置非空气方块
+//                if (!referenceState.isAir()) {
+//                    BlockState currentState = world.getBlockState(targetPos);
+//                    if (!currentState.equals(referenceState)) {
+//                        world.setBlockState(targetPos, referenceState, 3);
+//                    }
+//                }
+//            }
+//        }
+//
+//        // 复制地表以上的装饰方块
+//        if (reference.aboveSurfaceBlocks != null && reference.aboveSurfaceHeights != null) {
+//            for (int i = 0; i < reference.aboveSurfaceBlocks.length; i++) {
+//                int targetY = reference.aboveSurfaceHeights[i];
+//                BlockPos targetPos = new BlockPos(targetX, targetY, targetZ);
+//                BlockState referenceState = reference.aboveSurfaceBlocks[i];
+//
+//                BlockState currentState = world.getBlockState(targetPos);
+//                if (currentState.isAir() || currentState.isReplaceable()) {
+//                    world.setBlockState(targetPos, referenceState, 3);
+//                }
+//            }
+//        }
+//    }
+    /**
+     * 复制地形结构到目标位置
+     */
+    /**
+     * 复制地形结构到目标位置
+     */
     private void copyTerrainStructure(int targetX, int targetZ, ReferenceTerrainInfo reference) {
+        // 计算高度偏移量，使得中心点高度保持不变
+        int targetYOffset;
+
+        // 检查是否是中心点
+        boolean isCenterPoint = (targetX == center.getX() && targetZ == center.getZ());
+
+        if (isCenterPoint) {
+            // 中心点使用指定的Y坐标作为目标高度
+            targetYOffset = center.getY() - reference.surfaceY;
+        } else {
+            // 非中心点使用相同的高度偏移量，保持相对高度关系
+            targetYOffset = center.getY() - reference.surfaceY;
+        }
+
         // 复制主要地形方块
         if (reference.blocks != null && reference.heights != null) {
             for (int i = 0; i < reference.blocks.length; i++) {
-                int targetY = reference.heights[i];
+                int originalY = reference.heights[i];
+                int targetY = originalY + targetYOffset;
+
+                // 确保目标Y坐标在合理范围内
+                if (targetY < 0 || targetY > 320) continue;
+
                 BlockPos targetPos = new BlockPos(targetX, targetY, targetZ);
                 BlockState referenceState = reference.blocks[i];
 
@@ -260,7 +334,12 @@ public class TerrainTransformationTask {
         // 复制地表以上的装饰方块
         if (reference.aboveSurfaceBlocks != null && reference.aboveSurfaceHeights != null) {
             for (int i = 0; i < reference.aboveSurfaceBlocks.length; i++) {
-                int targetY = reference.aboveSurfaceHeights[i];
+                int originalY = reference.aboveSurfaceHeights[i];
+                int targetY = originalY + targetYOffset;
+
+                // 确保目标Y坐标在合理范围内
+                if (targetY < 0 || targetY > 320) continue;
+
                 BlockPos targetPos = new BlockPos(targetX, targetY, targetZ);
                 BlockState referenceState = reference.aboveSurfaceBlocks[i];
 
