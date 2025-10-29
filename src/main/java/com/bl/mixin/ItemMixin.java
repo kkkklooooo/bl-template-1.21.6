@@ -1,5 +1,6 @@
 package com.bl.mixin;
 
+import com.bl.BL;
 import com.bl.entity.client.FoodEnchantmentHelper;
 import com.bl.entity.client.SoundPlayer;
 import net.minecraft.enchantment.Enchantment;
@@ -51,18 +52,20 @@ public class ItemMixin {
         RegistryEntry<Enchantment> wbEntry = user.getWorld().getRegistryManager().getEntryOrThrow(Enchantments.EFFICIENCY);
         int efficiencyLevel = EnchantmentHelper.getLevel(wbEntry, stack);
         if (efficiencyLevel > 0) {
-            float a =new Random().nextFloat();
-            if(a<0.33333)
-            {
-                SoundPlayer.playCustomSoundAtPosition(user.getWorld(),user.getPos(), SoundPlayer.Sounds.a,100.0f,1);
-            }
-            else if(0.33333<a&&a<0.667)
-            {
-                SoundPlayer.playCustomSoundAtPosition(user.getWorld(),user.getPos(), SoundPlayer.Sounds.b,100.0f,1);
+            if(BL.a>=5) {
+                float a = new Random().nextFloat();
+                if (a < 0.33333) {
+                    SoundPlayer.playCustomSoundAtPosition(user.getWorld(), user.getPos(), SoundPlayer.Sounds.a, 100.0f, 1);
+                } else if (a < 0.667) {
+                    SoundPlayer.playCustomSoundAtPosition(user.getWorld(), user.getPos(), SoundPlayer.Sounds.b, 100.0f, 1);
+                } else {
+                    SoundPlayer.playCustomSoundAtPosition(user.getWorld(), user.getPos(), SoundPlayer.Sounds.c, 100.0f, 1);
+                }
+                BL.a=0;
             }
             else
             {
-                SoundPlayer.playCustomSoundAtPosition(user.getWorld(),user.getPos(), SoundPlayer.Sounds.c,100.0f,1);
+                BL.a++;
             }
 
         }
