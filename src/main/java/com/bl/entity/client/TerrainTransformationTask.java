@@ -197,12 +197,12 @@ public class TerrainTransformationTask {
                 .getHeightmap(Heightmap.Type.WORLD_SURFACE)
                 .get(targetX & 15, targetZ & 15);
 
-        if (surfaceY < 60) {
+        if (surfaceY < 54) {
             return;
         }
 
         // 从Y=61开始到地表上方清除方块
-        for (int y = 61; y <= surfaceY + 10; y++) {
+        for (int y = 56; y <= surfaceY + 10; y++) {
             BlockPos targetPos = new BlockPos(targetX, y, targetZ);
             BlockState currentState = world.getBlockState(targetPos);
             if (!currentState.isAir()) {
@@ -256,7 +256,7 @@ public class TerrainTransformationTask {
         List<BlockState> blocks = new ArrayList<>();
         List<Integer> heights = new ArrayList<>();
 
-        for (int y = 61; y <= surfaceY + 10; y++) {
+        for (int y = 56; y <= surfaceY + 10; y++) {
             BlockPos pos = new BlockPos(x, y, z);
             BlockState state = world.getBlockState(pos);
 
