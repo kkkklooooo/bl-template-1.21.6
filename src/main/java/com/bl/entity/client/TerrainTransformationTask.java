@@ -26,7 +26,7 @@ public class TerrainTransformationTask {
     private boolean isActive = false;
     private boolean isinit=false;
 
-    private int tickInterval = 1;
+    //private int tickInterval = 1;
 
     // 新增：控制改造速度的间隔变量，每 interval 次才改造圆环地形
     private final int interval = 1; // 例如设置为3，表示每3个半径才改造一次
@@ -182,7 +182,7 @@ public class TerrainTransformationTask {
         }
 
         // 先破坏目标位置
-        destroyAtPosition(targetX, targetZ);
+        destroyAtPosition(targetX,targetZ);
 
         // 然后从参考位置复制到目标位置
         copyFromReference(targetX, targetZ, referenceX, referenceZ);
@@ -202,11 +202,29 @@ public class TerrainTransformationTask {
         }
 
         // 从Y=61开始到地表上方清除方块
-        for (int y = 56; y <= surfaceY + 10; y++) {
-            BlockPos targetPos = new BlockPos(targetX, y, targetZ);
-            BlockState currentState = world.getBlockState(targetPos);
-            if (!currentState.isAir()) {
-                world.setBlockState(targetPos, Blocks.AIR.getDefaultState(), 3);
+        if(currentRadius<=3) {
+            for (int y = 56; y <= surfaceY + 10; y++) {
+                BlockPos targetPos = new BlockPos(targetX, y, targetZ);
+                if (targetPos.getX() == center.getX() && targetPos.getY() == center.getY() && targetPos.getZ() == center.getZ()) {
+                    continue;
+                }
+                if (targetPos.getY() == center.getY() - 1 && Math.abs(targetPos.getX() - center.getX()) <= 1 && Math.abs(targetPos.getZ() - center.getZ()) <= 1) {
+                    continue;
+                }
+                BlockState currentState = world.getBlockState(targetPos);
+                if (!currentState.isAir()) {
+                    world.setBlockState(targetPos, Blocks.AIR.getDefaultState(), 3);
+                }
+            }
+        }
+        else
+        {
+            for (int y = 56; y <= surfaceY + 10; y++) {
+                BlockPos targetPos = new BlockPos(targetX, y, targetZ);
+                BlockState currentState = world.getBlockState(targetPos);
+                if (!currentState.isAir()) {
+                    world.setBlockState(targetPos, Blocks.AIR.getDefaultState(), 3);
+                }
             }
         }
     }
@@ -286,17 +304,41 @@ public class TerrainTransformationTask {
     private void copyTerrainStructure(int targetX, int targetZ, ReferenceTerrainInfo reference) {
         // 复制主要地形方块
         if (reference.blocks != null && reference.heights != null) {
-            for (int i = 0; i < reference.blocks.length; i++) {
-                int targetY = reference.heights[i]+ center.getY()-this.referenceCenter.getY();
-                //targetY = this.center.getY();
-                BlockPos targetPos = new BlockPos(targetX, targetY, targetZ);
-                BlockState referenceState = reference.blocks[i];
+            if(currentRadius<=3) {
 
-                // 只设置非空气方块
-                if (!referenceState.isAir()) {
-                    BlockState currentState = world.getBlockState(targetPos);
-                    if (!currentState.equals(referenceState)) {
-                        world.setBlockState(targetPos, referenceState, 3);
+
+                for (int i = 0; i < reference.blocks.length; i++) {
+                    int targetY = reference.heights[i] + center.getY() - this.referenceCenter.getY();
+                    //targetY = this.center.getY();
+                    BlockPos targetPos = new BlockPos(targetX, targetY, targetZ);
+                    BlockState referenceState = reference.blocks[i];
+                    if (targetPos.getX() == center.getX() && targetPos.getY() == center.getY() && targetPos.getZ() == center.getZ()) {
+                        continue;
+                    }
+                    if (targetPos.getY() == center.getY() - 1 && Math.abs(targetPos.getX() - center.getX()) <= 1 && Math.abs(targetPos.getZ() - center.getZ()) <= 1) {
+                        continue;
+                    }
+                    // 只设置非空气方块
+                    if (!referenceState.isAir()) {
+                        BlockState currentState = world.getBlockState(targetPos);
+                        if (!currentState.equals(referenceState)) {
+                            world.setBlockState(targetPos, referenceState, 3);
+                        }
+                    }
+                }
+            }
+            else {
+                for (int i = 0; i < reference.blocks.length; i++) {
+                    int targetY = reference.heights[i] + center.getY() - this.referenceCenter.getY();
+                    //targetY = this.center.getY();
+                    BlockPos targetPos = new BlockPos(targetX, targetY, targetZ);
+                    BlockState referenceState = reference.blocks[i];
+                    // 只设置非空气方块
+                    if (!referenceState.isAir()) {
+                        BlockState currentState = world.getBlockState(targetPos);
+                        if (!currentState.equals(referenceState)) {
+                            world.setBlockState(targetPos, referenceState, 3);
+                        }
                     }
                 }
             }

@@ -13,13 +13,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
@@ -28,7 +28,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.HashSet;
 import java.util.Objects;
-import java.util.Random;
 import java.util.Set;
 
 import static com.bl.entity.ModEntities.EXPANDING_SPHERE;
@@ -43,7 +42,6 @@ public class BL implements ModInitializer {
 			new BlockToBiomeMapping(Blocks.JUNGLE_LOG, BiomeKeys.JUNGLE, "丛林"),
 			new BlockToBiomeMapping(Blocks.SAND, BiomeKeys.DESERT, "沙漠"),
 			new BlockToBiomeMapping(Blocks.SNOW_BLOCK, BiomeKeys.SNOWY_PLAINS, "雪原"),
-			new BlockToBiomeMapping(Blocks.MYCELIUM, BiomeKeys.MUSHROOM_FIELDS, "蘑菇岛"),
 			new BlockToBiomeMapping(Blocks.DARK_OAK_LOG, BiomeKeys.DARK_FOREST, "黑森林"),
 			new BlockToBiomeMapping(Blocks.OAK_LOG, BiomeKeys.FOREST, "森林"),
 			new BlockToBiomeMapping(Blocks.AMETHYST_BLOCK, BiomeKeys.FLOWER_FOREST, "繁花森林"),
@@ -61,6 +59,15 @@ public class BL implements ModInitializer {
 			new BlockToBiomeMapping(Blocks.CHERRY_LOG, BiomeKeys.CHERRY_GROVE, "樱花树林")
 	};
 
+	// 定义方块到结构的映射
+	private static final BlockToStructureMapping[] BLOCK_TO_STRUCTURE_MAPPINGS = {
+			new BlockToStructureMapping(Blocks.TARGET, "village", "村庄"),
+			new BlockToStructureMapping(Blocks.COBBLESTONE, "pillager_outpost", "掠夺者前哨站"),
+			new BlockToStructureMapping(Blocks.MOSSY_COBBLESTONE, "jungle_pyramid", "丛林神庙"),
+			new BlockToStructureMapping(Blocks.SMOOTH_SANDSTONE, "desert_pyramid", "沙漠神殿"),
+			new BlockToStructureMapping(Blocks.BOOKSHELF, "mansion", "林地府邸"),
+	};
+
 	public static void createExpandingSphere(double max, Vec3d pos, ServerWorld world) {
 		ExpandingSphereEntity sphere = new ExpandingSphereEntity(EXPANDING_SPHERE, world);
 		sphere.SetMax(max);
@@ -76,8 +83,6 @@ public class BL implements ModInitializer {
 
 		UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
 			if (world.isClient()) {
-				//player.addVelocity(0,3,0);
-				//player.setPos(player.getX(),player.getY()+50,player.getZ());
 				return ActionResult.PASS;
 			}
 
@@ -90,10 +95,9 @@ public class BL implements ModInitializer {
 				if (!player.isCreative()) {
 					itemStack.decrement(1);
 				}
-				BL.LOGGER.warn("操你妈的");
+				BL.LOGGER.warn("激活地形改造");
 
 				world.getServer().execute(()->{
-
 					startTerrainTransformation((ServerWorld) world, pos, player);
 				});
 
@@ -109,10 +113,14 @@ public class BL implements ModInitializer {
 	private void startTerrainTransformation(ServerWorld world, BlockPos beaconPos, net.minecraft.entity.player.PlayerEntity player) {
 		// 检查信标东侧 (x+1, y, z) 的方块
 		RegistryKey<Biome> targetBiome = checkBeaconSideBlock(world, beaconPos, player);
+		String targetStructure = checkBeaconSideBlockForStructure(world, beaconPos, player);
 
 		BlockPos referencePos;
 
-		if (targetBiome != null) {
+		if (targetStructure != null) {
+			// 使用结构定位
+			referencePos = findStructureReferencePosition(world, beaconPos, targetStructure, player);
+		} else if (targetBiome != null) {
 			// 使用生物群系定位
 			referencePos = findBiomeReferencePosition(world, beaconPos, targetBiome, player);
 		} else {
@@ -127,6 +135,8 @@ public class BL implements ModInitializer {
 		} else {
 			if (targetBiome != null) {
 				player.sendMessage(net.minecraft.text.Text.literal("§c未找到指定的生物群系！请尝试在其他位置使用。"), false);
+			} else if (targetStructure != null) {
+				player.sendMessage(net.minecraft.text.Text.literal("§c未找到指定的结构！请尝试在其他位置使用。"), false);
 			} else {
 				player.sendMessage(net.minecraft.text.Text.literal("§c未找到合适的参考地形！请尝试在其他位置使用。"), false);
 			}
@@ -149,8 +159,25 @@ public class BL implements ModInitializer {
 			}
 		}
 
-		// 如果没有找到对应的方块映射
-		player.sendMessage(Text.literal("§7信标东侧方块: " + sideBlock.getName().getString() + " 未定义映射，使用随机地形"), false);
+		return null;
+	}
+
+	/**
+	 * 检查信标东侧 (x+1, y, z) 的方块并返回对应的结构
+	 */
+	private String checkBeaconSideBlockForStructure(ServerWorld world, BlockPos beaconPos, net.minecraft.entity.player.PlayerEntity player) {
+		// 检查信标东侧 (x+1, y, z) 的方块
+		BlockPos sidePos = beaconPos.east();
+		Block sideBlock = world.getBlockState(sidePos).getBlock();
+
+		// 查找对应的结构
+		for (BlockToStructureMapping mapping : BLOCK_TO_STRUCTURE_MAPPINGS) {
+			if (mapping.block == sideBlock) {
+				player.sendMessage(Text.literal("§6检测到东侧方块: " + sideBlock.getName().getString() + "，将寻找" + mapping.structureName + "结构"), false);
+				return mapping.structureId;
+			}
+		}
+
 		return null;
 	}
 
@@ -161,12 +188,12 @@ public class BL implements ModInitializer {
 		try {
 			// 使用世界的locateBiome方法查找最近的生物群系
 			BlockPos biomePos = Objects.requireNonNull(world.locateBiome(
-                    b -> b.matchesKey(targetBiome),
-                    center,
-                    10000, // 搜索半径增加到10000格
-                    8,    // 区块检查步长
-                    64    // 分组大小
-            )).getFirst();
+					b -> b.matchesKey(targetBiome),
+					center,
+					10000, // 搜索半径增加到10000格
+					8,    // 区块检查步长
+					64    // 分组大小
+			)).getFirst();
 
 			if (biomePos != null) {
 				// 获取该位置的地表高度
@@ -187,6 +214,39 @@ public class BL implements ModInitializer {
 		} catch (Exception e) {
 			LOGGER.error("查找生物群系时发生错误", e);
 			player.sendMessage(Text.literal("§c查找生物群系时发生错误: " + e.getMessage()), false);
+		}
+
+		return null;
+	}
+
+	/**
+	 * 查找特定结构的参考位置
+	 */
+	private BlockPos findStructureReferencePosition(ServerWorld world, BlockPos center, String structureId, net.minecraft.entity.player.PlayerEntity player) {
+		try {
+			// 使用世界的locateStructure方法查找最近的结构
+			BlockPos structurePos = world.locateStructure(
+					TagKey.of(net.minecraft.registry.RegistryKeys.STRUCTURE, net.minecraft.util.Identifier.of(structureId)),
+					center,
+					10000, // 搜索半径
+					false   // 是否只搜索已探索区域
+			);
+
+			if (structurePos != null) {
+				// 获取该位置的地表高度
+				int surfaceY = world.getTopY(Heightmap.Type.WORLD_SURFACE, structurePos.getX(), structurePos.getZ());
+				BlockPos surfacePos = new BlockPos(structurePos.getX(), surfaceY, structurePos.getZ());
+
+				double distance = Math.sqrt(center.getSquaredDistance(surfacePos));
+				player.sendMessage(Text.literal("§a成功找到目标结构，距离: " + String.format("%.1f", distance) + " 格"), false);
+
+				// 对于结构，我们返回结构本身的位置，而不是地表位置
+				// 这样可以确保复制整个结构区域
+				return structurePos;
+			}
+		} catch (Exception e) {
+			LOGGER.error("查找结构时发生错误", e);
+			player.sendMessage(Text.literal("§c查找结构时发生错误: " + e.getMessage()), false);
 		}
 
 		return null;
@@ -293,6 +353,12 @@ public class BL implements ModInitializer {
 	/**
 	 * 方块到生物群系的映射类
 	 */
-		private record BlockToBiomeMapping(Block block, RegistryKey<Biome> biome, String biomeName) {
+	private record BlockToBiomeMapping(Block block, RegistryKey<Biome> biome, String biomeName) {
+	}
+
+	/**
+	 * 方块到结构的映射类
+	 */
+		private record BlockToStructureMapping(Block block, String structureId, String structureName) {
 	}
 }
