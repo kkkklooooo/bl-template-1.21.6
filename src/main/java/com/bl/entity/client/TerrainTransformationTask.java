@@ -4,16 +4,20 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.Heightmap;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class TerrainTransformationTask {
     private final ServerWorld world;
     private final BlockPos center;
     private final BlockPos referenceCenter;
     private final net.minecraft.entity.player.PlayerEntity player;
+    private Set<ChunkPos> forcedChunks = new HashSet<>();
 
     private int currentRadius = 0;
     private final int maxRadius = 64;
@@ -32,11 +36,25 @@ public class TerrainTransformationTask {
 
     public void start() {
         this.isActive = true;
+        int chunkRadius = (maxRadius + 15) >> 4; // 向上取整
+        for (int x = -chunkRadius; x <= chunkRadius; x++) {
+            for (int z = -chunkRadius; z <= chunkRadius; z++) {
+                ChunkPos chunkPos = new ChunkPos((referenceCenter.getX() >> 4) + x, (referenceCenter.getZ() >> 4) + z);
+                if (!forcedChunks.contains(chunkPos)) {
+                    world.setChunkForced(chunkPos.x, chunkPos.z, true);
+                    forcedChunks.add(chunkPos);
+                }
+            }
+        }
         scheduleNextTick();
     }
 
     public void stop() {
         this.isActive = false;
+        for (ChunkPos chunkPos : forcedChunks) {
+            world.setChunkForced(chunkPos.x, chunkPos.z, false);
+        }
+        forcedChunks.clear();
     }
 
     private void scheduleNextTick() {

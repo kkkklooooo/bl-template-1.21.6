@@ -19,6 +19,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
@@ -27,6 +28,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.HashSet;
 import java.util.Objects;
+import java.util.Random;
 import java.util.Set;
 
 import static com.bl.entity.ModEntities.EXPANDING_SPHERE;
@@ -41,7 +43,7 @@ public class BL implements ModInitializer {
 			new BlockToBiomeMapping(Blocks.JUNGLE_LOG, BiomeKeys.JUNGLE, "丛林"),
 			new BlockToBiomeMapping(Blocks.SAND, BiomeKeys.DESERT, "沙漠"),
 			new BlockToBiomeMapping(Blocks.SNOW_BLOCK, BiomeKeys.SNOWY_PLAINS, "雪原"),
-			new BlockToBiomeMapping(Blocks.MUSHROOM_STEM, BiomeKeys.MUSHROOM_FIELDS, "蘑菇岛"),
+			new BlockToBiomeMapping(Blocks.MYCELIUM, BiomeKeys.MUSHROOM_FIELDS, "蘑菇岛"),
 			new BlockToBiomeMapping(Blocks.DARK_OAK_LOG, BiomeKeys.DARK_FOREST, "黑森林"),
 			new BlockToBiomeMapping(Blocks.OAK_LOG, BiomeKeys.FOREST, "森林"),
 			new BlockToBiomeMapping(Blocks.AMETHYST_BLOCK, BiomeKeys.FLOWER_FOREST, "繁花森林"),
@@ -214,7 +216,7 @@ public class BL implements ModInitializer {
 	 * 原有的随机查找方法（作为备选）
 	 */
 	private BlockPos findSuitableReferencePosition(ServerWorld world, BlockPos center) {
-		int minDistance = 10000;
+		int minDistance = 2000;
 		int maxAttempts = 20;
 		int forceLoadChunkRadius = 2;
 		Set<ChunkPos> chunksToForceLoad = new HashSet<>();
@@ -222,7 +224,7 @@ public class BL implements ModInitializer {
 		try {
 			for (int i = 0; i < maxAttempts; i++) {
 				double angle = world.random.nextDouble() * 2 * Math.PI;
-				int distance = minDistance + world.random.nextInt(5000);
+				int distance = minDistance + world.random.nextInt(500);
 
 				int refX = center.getX() + (int)(Math.cos(angle) * distance);
 				int refZ = center.getZ() + (int)(Math.sin(angle) * distance);
