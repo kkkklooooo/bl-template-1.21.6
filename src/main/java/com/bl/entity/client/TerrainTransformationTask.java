@@ -16,12 +16,12 @@ public class TerrainTransformationTask {
     private final net.minecraft.entity.player.PlayerEntity player;
 
     private int currentRadius = 0;
-    private final int maxRadius = 40;
+    private final int maxRadius = 64;
     private boolean isActive = false;
 
-    // 世界高度范围
-    private final int minY = -64;
-    private final int maxY = 320;
+    // 新增：控制改造速度的间隔变量，每 interval 次才改造圆环地形
+    private final int interval = 3; // 例如设置为3，表示每3个半径才改造一次
+    private int radiusCounter = 0; // 用于计数当前累计的半径数
 
     public TerrainTransformationTask(ServerWorld world, BlockPos center, BlockPos referenceCenter, net.minecraft.entity.player.PlayerEntity player) {
         this.world = world;
@@ -53,6 +53,21 @@ public class TerrainTransformationTask {
             stop();
             return;
         }
+
+        // 新增：间隔控制逻辑
+        radiusCounter++;
+        if (radiusCounter < interval) {
+            // 未达到间隔，只发送消息但不进行实际改造
+            player.sendMessage(net.minecraft.text.Text.literal("§7准备改造半径: " + currentRadius + "格 (等待中 " + radiusCounter + "/" + interval + ")"), false);
+            //currentRadius++;
+            if (isActive) {
+                scheduleNextTick();
+            }
+            return;
+        }
+
+        // 达到间隔，重置计数器并进行实际改造
+        radiusCounter = 0;
 
         // 生成当前半径的所有位置（完整的圆环区域）
         List<BlockPos> circlePositions = generateCirclePositions(currentRadius);
