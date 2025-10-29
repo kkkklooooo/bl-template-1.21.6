@@ -6,21 +6,25 @@ import net.minecraft.block.Blocks;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.Heightmap;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class TerrainTransformationTask {
     private final ServerWorld world;
     private final BlockPos center;
     private final BlockPos referenceCenter;
     private final net.minecraft.entity.player.PlayerEntity player;
+    private Set<ChunkPos> forcedChunks = new HashSet<>();
 
     private int currentRadius = 0;
     private final int maxRadius = 64;
     private boolean isActive = false;
-    private int heightOffset = 0;
+    private boolean isinit=false;
 
     private int tickInterval = 1;
 
@@ -49,9 +53,31 @@ public class TerrainTransformationTask {
 
 
     private void RegisterToTick(){
+
         ServerTickEvents.END_SERVER_TICK.register((MinecraftServer server)->{
             if(this.isActive){
                 processNextStep();
+                //这段代码精妙绝伦，活跃但是没有初始化则初始化，而不活跃了却初始化为true了说明没有进行结尾处理，结尾处理后改成false
+                if(!isinit)
+                {
+                    int chunkRadius = (maxRadius + 15) >> 4; // 向上取整
+                    for (int x = -chunkRadius; x <= chunkRadius; x++) {
+                        for (int z = -chunkRadius; z <= chunkRadius; z++) {
+                            ChunkPos chunkPos = new ChunkPos((referenceCenter.getX() >> 4) + x, (referenceCenter.getZ() >> 4) + z);
+                            if (!forcedChunks.contains(chunkPos)) {
+                                world.setChunkForced(chunkPos.x, chunkPos.z, true);
+                                forcedChunks.add(chunkPos);
+                            }
+                        }
+                    }
+                    isinit=true;
+                }
+                } else if (isinit) {
+                for (ChunkPos chunkPos : forcedChunks) {
+                    world.setChunkForced(chunkPos.x, chunkPos.z, false);
+                }
+                forcedChunks.clear();
+                isinit=false;
             }
         });
     }
@@ -78,9 +104,9 @@ public class TerrainTransformationTask {
             // 未达到间隔，只发送消息但不进行实际改造
             player.sendMessage(net.minecraft.text.Text.literal("§7准备改造半径: " + currentRadius + "格 (等待中 " + radiusCounter + "/" + interval + ")"), false);
             //currentRadius++;
-            if (isActive) {
+            /*if (isActive) {
                 //scheduleNextTick();
-            }
+            }*/
             return;
         }
 
@@ -99,9 +125,9 @@ public class TerrainTransformationTask {
 
         currentRadius++;
 
-        if (isActive) {
+        /*if (isActive) {
             //scheduleNextTick();
-        }
+        }*/
     }
 
     /**
@@ -291,60 +317,6 @@ public class TerrainTransformationTask {
             }
         }
     }
-    /**
-     * 复制地形结构到目标位置
-     */
-    /**
-     * 复制地形结构到目标位置
-     */
-    /**
-     * 复制地形结构到目标位置，保持中心点高度不变
-     */
-    /**
-     * 复制地形结构到目标位置（支持整体抬高/降低，中心点高度不变）
-     */
-    /**
-     * 复制地形结构到目标位置（保持中心点高度不变）
-     */
-//    private void copyTerrainStructure(int targetX, int targetZ, ReferenceTerrainInfo reference) {
-//        // 获取目标位置和参考位置的中心点高度
-//        int targetCenterY = this.center.getY();
-//        int referenceCenterY = this.referenceCenter.getY();
-//
-//        // 计算Y轴偏移量，使得中心点高度保持不变
-//        int yOffset = targetCenterY - referenceCenterY;
-//
-//        // 复制主要地形方块（应用Y轴偏移）
-//        if (reference.blocks != null && reference.heights != null) {
-//            for (int i = 0; i < reference.blocks.length; i++) {
-//                int targetY = reference.heights[i] + yOffset;
-//                BlockPos targetPos = new BlockPos(targetX, targetY, targetZ);
-//                BlockState referenceState = reference.blocks[i];
-//
-//                // 只设置非空气方块
-//                if (!referenceState.isAir()) {
-//                    BlockState currentState = world.getBlockState(targetPos);
-//                    if (!currentState.equals(referenceState)) {
-//                        world.setBlockState(targetPos, referenceState, 3);
-//                    }
-//                }
-//            }
-//        }
-//
-//        // 复制地表以上的装饰方块（应用Y轴偏移）
-//        if (reference.aboveSurfaceBlocks != null && reference.aboveSurfaceHeights != null) {
-//            for (int i = 0; i < reference.aboveSurfaceBlocks.length; i++) {
-//                int targetY = reference.aboveSurfaceHeights[i] + yOffset;
-//                BlockPos targetPos = new BlockPos(targetX, targetY, targetZ);
-//                BlockState referenceState = reference.aboveSurfaceBlocks[i];
-//
-//                BlockState currentState = world.getBlockState(targetPos);
-//                if (currentState.isAir() || currentState.isReplaceable()) {
-//                    world.setBlockState(targetPos, referenceState, 3);
-//                }
-//            }
-//        }
-//    }
 
     /**
      * 参考地形信息类
