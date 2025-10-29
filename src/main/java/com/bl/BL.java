@@ -43,6 +43,7 @@ public class BL implements ModInitializer {
 			new BlockToBiomeMapping(Blocks.SAND, BiomeKeys.DESERT, "沙漠"),
 			new BlockToBiomeMapping(Blocks.SNOW_BLOCK, BiomeKeys.SNOWY_PLAINS, "雪原"),
 			new BlockToBiomeMapping(Blocks.DARK_OAK_LOG, BiomeKeys.DARK_FOREST, "黑森林"),
+			new BlockToBiomeMapping(Blocks.MYCELIUM,BiomeKeys.MUSHROOM_FIELDS,"蘑菇岛"),
 			new BlockToBiomeMapping(Blocks.OAK_LOG, BiomeKeys.FOREST, "森林"),
 			new BlockToBiomeMapping(Blocks.AMETHYST_BLOCK, BiomeKeys.FLOWER_FOREST, "繁花森林"),
 			new BlockToBiomeMapping(Blocks.HAY_BLOCK, BiomeKeys.SUNFLOWER_PLAINS, "向日葵平原"),
