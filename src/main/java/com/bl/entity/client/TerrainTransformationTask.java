@@ -29,7 +29,7 @@ public class TerrainTransformationTask {
     //private int tickInterval = 1;
 
     // 新增：控制改造速度的间隔变量，每 interval 次才改造圆环地形
-    private final int interval = 1; // 例如设置为3，表示每3个半径才改造一次
+    private final int interval = 3; // 例如设置为3，表示每3个半径才改造一次
     private int radiusCounter = 0; // 用于计数当前累计的半径数
 
     public TerrainTransformationTask(ServerWorld world, BlockPos center, BlockPos referenceCenter, net.minecraft.entity.player.PlayerEntity player) {
@@ -256,7 +256,7 @@ public class TerrainTransformationTask {
                 .getHeightmap(Heightmap.Type.WORLD_SURFACE)
                 .get(referenceX & 15, referenceZ & 15);
 
-        if (referenceSurfaceY < 60) {
+        if (referenceSurfaceY < 55) {
             return null;
         }
 
@@ -347,7 +347,10 @@ public class TerrainTransformationTask {
         // 复制地表以上的装饰方块
         if (reference.aboveSurfaceBlocks != null && reference.aboveSurfaceHeights != null) {
             for (int i = 0; i < reference.aboveSurfaceBlocks.length; i++) {
-                int targetY = reference.heights[i]+ center.getY()-this.referenceCenter.getY();
+                int targetY = 0;
+                if (reference.heights != null) {
+                    targetY = reference.heights[i]+ center.getY()-this.referenceCenter.getY();
+                }
                 //targetY = this.center.getY();
                 BlockPos targetPos = new BlockPos(targetX, targetY, targetZ);
                 BlockState referenceState = reference.aboveSurfaceBlocks[i];

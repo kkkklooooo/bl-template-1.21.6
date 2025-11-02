@@ -3,11 +3,6 @@
   "package": "com.bl.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "FallingBlockEntityMixin",
-    "ItemMixin",
-    "MaceMixin",
-    "VillagerEntityMixin",
-    "WindChargeMixin"
   ],
   "injectors": {
     "defaultRequire": 1

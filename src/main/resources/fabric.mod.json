@@ -19,7 +19,7 @@
 			"com.bl.BL"
 		],
 		"client": [
-			"com.bl.entity.client.EntityClient"
+
 		],
 		"fabric-datagen": [
 			"com.bl.BLDataGenerator"
